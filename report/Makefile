@@ -5,6 +5,8 @@ all: $(OBJECTS)
 
 midterm.pdf: midterm.tex
 	xelatex -halt-on-error $< -o $@
+	xelatex -halt-on-error $< -o $@
+	xelatex -halt-on-error $< -o $@
 	open -a Preview $@
 
 clean:
