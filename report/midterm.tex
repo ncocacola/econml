@@ -2,7 +2,7 @@
 \usepackage{graphicx}                       % ctan.org/pkg/graphicx
 \usepackage[T1]{fontenc}                    % tex.stackexchange.com/q/664/
 \setlength\parindent{0pt}                   % tex.stackexchange.com/q/27802/
-\usepackage{enumitem}
+\usepackage{enumitem}                       % tex.stackexchange.com/q/119919
 \usepackage{hyperref}                       % tex.stackexchange.com/q/315461/
 
 \begin{document}
@@ -12,6 +12,17 @@
 \maketitle
 
 \section{Background}
+
+This project aims to investigate how Machine Learning algorithms (e.g. decision trees, random
+forests, boosting) compare to more tradition econometric tools such as linear or logistic
+regressions, using a real-world dataset \cite{enquete} to study a binary variable using these
+different algorithms.\\
+\\
+Our objective is twofold:
+\begin{enumerate}[nosep]
+    \item compare prediction quality between the different algorithms
+    \item compare interpretability of the models and recover marginal effects if possible
+\end{enumerate}
 
 \section{Current progress}
 \subsection{Research}
