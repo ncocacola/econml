@@ -1,0 +1,16 @@
+import matplotlib
+matplotlib.style.use('ggplot')
+
+
+matplotlib.style.use('ggplot')
+
+# brute_force["dip30_"]
+sum(X["t1"]["age15_"])
+
+brute_force["age15_"].hist(bins=100)
+
+# for category in params:
+#     plt.figure()
+#     for param in params[category]:
+#         brute_force[param].hist(bins=50)
+#     print category
