@@ -1,9 +1,16 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{report}
 \usepackage{parskip}                        % tex.stackexchange.com/q/49188/
 \usepackage{graphicx}                       % ctan.org/pkg/graphicx
 \usepackage[T1]{fontenc}                    % tex.stackexchange.com/q/664/
 \usepackage{enumitem}                       % tex.stackexchange.com/q/119919
 \usepackage{hyperref}                       % tex.stackexchange.com/q/315461/
+
+% http://texblog.org/tag/titlesec/
+\usepackage{titlesec}
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}{\Huge\bfseries}{\thechapter\hsp}{0pt}{\Huge\scshape\bfseries}
+\titleformat{\section}[hang]{\Large\scshape}{\thesection\hsp}{0pt}{\Large\scshape}
+\titleformat{\subsection}[hang]{\normalsize\scshape}{\thesubsection\hsp}{0pt}{\normalsize\scshape}
 
 % tex.stackexchange.com/q/823/
 \usepackage{xcolor}
