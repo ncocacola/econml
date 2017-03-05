@@ -9,6 +9,12 @@ midterm.pdf: midterm.tex
 	xelatex -halt-on-error $< -o $@
 	open -a Preview $@
 
+final.pdf: final.tex
+	xelatex -halt-on-error $< -o $@
+	xelatex -halt-on-error $< -o $@
+	xelatex -halt-on-error $< -o $@
+	open -a Preview $@
+
 clean:
 	rm -f *.log *.aux *.nav *.snm *.toc *.vrb *.out *.bbl *.blg *.synctex.gz
 
