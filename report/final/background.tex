@@ -75,3 +75,103 @@ question. Prediction intervals are always wider than confidence intervals, becau
 both the error in the estimate for $f(x)$ (the reducible error) and the uncertainty as to how much
 an individual point will differ from the population regression plane (the irreducible error).
 \end{enumerate}
+
+
+\subsubsection{Classification, the logit and probit models}
+The linear regression model assumes that the response variable Y is quantitative. But in many
+situations, the response variable is instead qualitative. For example, eye color is qualitative,
+taking on values blue, brown, or green. Often qualitative variables are referred to as categorical ;
+we will use these terms interchangeably. In this chapter, we study approaches for predicting
+qualitative responses, a process that is known as classification. Predicting a qualitative response
+for an observation can be referred to as classifying that observation, since it involves assigning
+the observation to a category, or class. On the other hand, often the methods used for
+classification first predict the probability of each of the categories of a qualitative variable, as
+the basis for making the classification. In this sense they also behave like regression methods.
+There are many possible classification techniques, or classifiers, that one might use to predict a
+qualitative response. In this chapter we two of the most widely-used classifiers: logistic and
+probit regression.
+
+For an OLS model, we have:
+
+\begin{equation}
+    y = x'\beta + \epsilon
+\end{equation}
+
+Binary outcome models estimate the probability that $y=1$ as a function of the independent variables:
+
+\begin{equation}
+    p = P(y=1 | x) = F(x’\beta)
+\end{equation}
+
+There are 3 different models depending on the functional form of $F(x’\beta)$:
+
+\begin{enumerate}
+    \item Regression model (linear probability model): $F(x'\beta) = x'\beta$
+    \item Logit model: $F(x'\beta)$ is the cdf of the logistic distribution
+    \begin{equation}
+        F(x'\beta) = \Lambda(x'\beta) = \frac{e^{x'\beta}}{1+e^{x'\beta}}
+    \end{equation}
+    The predicted probabilities are limited between 0 and 1.
+    \item Probit model: $F(x'\beta)$ is the cdf of the standard normal distribution
+    \begin{equation}
+        F(x'\beta) = \Phi(x'\beta) = \int_{-\infty}^{+\infty} \phi(z)dz
+    \end{equation}
+    The predicted probabilities are also limited between 0 and 1.
+\end{enumerate}
+
+% TODO: graphs of the linear, logit and probit models
+
+Probit and logit models are estimated using the maximum likelihood method. An increase in $x$
+increases/decreases the likelihood that $y=1$ (makes that outcome more/less likely). In other words,
+an increase in $x$ makes the outcome of $1$ more or less likely. We interpret the sign of the
+coefficient but not the magnitude. The magnitude cannot be interpreted using the coefficient because
+different models have different scales of coefficients.
+
+Coefficients differ among models because of the functional form of the $F$ function:
+
+$$\beta_{logit} \approx 4\beta_{OLS}$$
+$$\beta_{probit} \approx 2.5\beta_{OLS}$$
+$$\beta_{logit} \approx 1.6\beta_{logit}$$
+
+% TODO: explain where this comes from
+
+Now let’s look at the marginal effects. For the OLS regression model, the marginal effects are the
+coefficients and they do not depend on $x$. For the logit and probit models, the marginal effects
+are calculated as:
+
+\begin{equation}
+    \frac{\partial p}{\partial x_j} = F'(x'\beta) \times \beta_j
+\end{equation}
+
+The marginal effects depend on $x$, so we need to estimate the marginal effects at a specific value
+of $x$ (typically the means).
+
+\paragraph{Marginal effects for the logit model}
+\begin{equation}
+    \frac{\partial p}{\partial x_j} = \beta_j\Lambda(x'\beta)(1-\Lambda(x'\beta)) = \beta_j\frac{e^{x'\beta}}{(1+e^{x'\beta})^2}
+\end{equation}
+
+\paragraph{Marginal effects for the probit model}
+\begin{equation}
+    \frac{\partial p}{\partial x_j} = \beta_j\Phi'(x'\beta) = \beta_j\phi'(x'\beta)
+\end{equation}
+
+\paragraph{Interpretation of marginal effects}
+\begin{itemize}
+    \item An increase in $x$ increases (decreases) the probability that $y=1$ by the marginal effect expressed as a percentage
+    \begin{itemize}
+        \item For dummy independent variables, the marginal effect is expressed in comparison to the base category ($x=0$).
+        \item For continuous independent variables, the marginal effect is expressed for a one-unit change in $x$.
+    \end{itemize}
+    \item We interpret both the sign and the magnitude of the marginal effects.
+    \item The probit and logit models produce almost identical marginal effects.
+\end{itemize}
+
+\paragraph{Odds ratios/relative risk for the logit model}
+The odds ratio or relative risk is $\frac{p}{1-p}$ and measures the probability that $y=1$ relative to the probability that $y=0$.
+
+$$p = \frac{e^{x'\beta}}{1+e^{x'\beta}}$$
+$$\frac{p}{1-p} = e^{x'\beta}$$
+$$\ln \frac{p}{1-p} = x'\beta$$
+
+An odds ratio of $2$ means that the outcome $y=1$ is twice as likely as the outcome of $y=0$. Odds ratios are estimated with the logistic model.
