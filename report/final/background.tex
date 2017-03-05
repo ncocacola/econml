@@ -24,6 +24,9 @@ possible to better understand the situation of the unemployed as well as changes
 with regard to work: change from school to work, retirement activity, changes in occupation.
 \textit{Enqu\^ete Emploi} contains detailed data on training.
 
+% TODO: add more stuff here
+% TODO: ajouter un graphique histogramme (1 seule barre) avec la valeur actop montrant
+% d'une couleur les 0 et d'une autre couleur 1 pour mettre en avant que 65% des gens sont actifs
 
 \subsection{Explanation on econometrical methods}
 \subsubsection{Linear Regression}
@@ -97,7 +100,8 @@ For an OLS model, we have:
     y = x'\beta + \epsilon
 \end{equation}
 
-Binary outcome models estimate the probability that $y=1$ as a function of the independent variables:
+Binary outcome models estimate the probability that $y=1$ as a function of the independent
+variables:
 
 \begin{equation}
     p = P(y=1 | x) = F(x’\beta)
@@ -147,8 +151,10 @@ The marginal effects depend on $x$, so we need to estimate the marginal effects 
 of $x$ (typically the means).
 
 \paragraph{Marginal effects for the logit model}
+
 \begin{equation}
-    \frac{\partial p}{\partial x_j} = \beta_j\Lambda(x'\beta)(1-\Lambda(x'\beta)) = \beta_j\frac{e^{x'\beta}}{(1+e^{x'\beta})^2}
+    \frac{\partial p}{\partial x_j} = \beta_j\Lambda(x'\beta)(1-\Lambda(x'\beta)) =
+    \\beta_j\frac{e^{x'\beta}}{(1+e^{x'\beta})^2}
 \end{equation}
 
 \paragraph{Marginal effects for the probit model}
@@ -158,20 +164,238 @@ of $x$ (typically the means).
 
 \paragraph{Interpretation of marginal effects}
 \begin{itemize}
-    \item An increase in $x$ increases (decreases) the probability that $y=1$ by the marginal effect expressed as a percentage
+    \item An increase in $x$ increases (decreases) the probability that $y=1$ by the marginal effect
+expressed as a percentage
     \begin{itemize}
-        \item For dummy independent variables, the marginal effect is expressed in comparison to the base category ($x=0$).
-        \item For continuous independent variables, the marginal effect is expressed for a one-unit change in $x$.
+        \item For dummy independent variables, the marginal effect is expressed in comparison to the
+    base category ($x=0$).
+        \item For continuous independent variables, the marginal effect is expressed for a one-unit
+    change in $x$.
     \end{itemize}
     \item We interpret both the sign and the magnitude of the marginal effects.
     \item The probit and logit models produce almost identical marginal effects.
+
 \end{itemize}
 
 \paragraph{Odds ratios/relative risk for the logit model}
-The odds ratio or relative risk is $\frac{p}{1-p}$ and measures the probability that $y=1$ relative to the probability that $y=0$.
+The odds ratio or relative risk is $\frac{p}{1-p}$ and measures the probability that $y=1$ relative
+to the probability that $y=0$.
 
 $$p = \frac{e^{x'\beta}}{1+e^{x'\beta}}$$
 $$\frac{p}{1-p} = e^{x'\beta}$$
 $$\ln \frac{p}{1-p} = x'\beta$$
 
-An odds ratio of $2$ means that the outcome $y=1$ is twice as likely as the outcome of $y=0$. Odds ratios are estimated with the logistic model.
+An odds ratio of $2$ means that the outcome $y=1$ is twice as likely as the outcome of $y=0$. Odds
+ratios are estimated with the logistic model.
+
+
+\subsection{Machine Learning methods}
+\subsubsection{Decision trees}
+
+In the following, we describe tree-based methods for regression and classification. These involve
+stratifying or segmenting the predictor space into a number of simple regions. In order to make a
+prediction for a given observation, we typically use the mean or the mode of the training
+observations in the region to which it belongs. Since the set of splitting rules used to segment the
+predictor space can be summarized in a tree, these types of approaches are known as decision tree
+methods. Decision trees can be applied to both regression and classification problems. We first
+consider regression problems, and then move on to classification.
+
+\paragraph{Regression trees}
+We discuss the process of building a regression tree. There are two steps:
+\begin{enumerate}
+    \item We divide the predictor space --- that is, the set of possible values for $x_1, x_2, ...,
+x_n$ --- into $J$ distinct and non-overlapping regions $R_1, R_2, ..., R_J$.
+    \item For every observation that falls into the region $R_j$, we make the same prediction, which
+is simply the mean of the response values for the training observations in $R_j$.
+\end{enumerate}
+
+We now elaborate on Step 1 above. How do we construct the regions $R_1, ..., R_J$? In theory, the
+regions could have any shape. However, we choose to divide the predictor space into high-dimensional
+rectangles, or boxes, for simplicity and for ease of interpretation of the resulting predictive
+model. The goal is to find boxes $R_1, ..., R_J$ that minimize the RSS, given by:
+
+$$\sum_{j=1}^{J} \sum_{i \in R_j} (y_i - \hat{y}_{R_j})^2$$
+
+where $\hat{y}_{R_j}$ is the mean response for the training observations within the $j^{th}$ box.
+
+The process may produce good predictions on the training set, but is likely to overfit the data,
+leading to poor test set performance. This is because the resulting tree might be too complex. A
+smaller tree with fewer splits (that is, fewer regions $R_1, ..., R_J$) might lead to lower variance
+and better interpretation at the cost of a little bias. One possible alternative to the process
+described above is to build the tree only so long as the decrease in the RSS due to each split
+exceeds some (high) threshold. This strategy will result in smaller trees, but is too short-sighted
+since a seemingly worthless split early on in the tree might be followed by a very good split — that
+is, a split that leads to a large reduction in RSS later on. Therefore, a better strategy is to grow
+a very large tree $T_0$, and then prune it back in order to obtain a subtree.
+
+\paragraph{Classification trees}
+A classification tree is very similar to a regression tree, except that it is used to predict a
+qualitative response rather than a quantitative one. Recall that for a regression tree, the
+predicted response for an observation is given by the mean response of the training observations
+that belong to the same terminal node. In contrast, for a classification tree, we predict that each
+observation belongs to the most commonly occurring class of training observations in the region to
+which it belongs. In interpreting the results of a classification tree, we are often interested not
+only in the class prediction corresponding to a particular terminal node region, but also in the
+class proportions among the training observations that fall into that region. The task of growing a
+classification tree is quite similar to the task of growing a regression tree. Just as in the
+regression setting, we use recursive binary splitting to grow a classification tree. However, in the
+classification setting, RSS cannot be used as a criterion for making the binary splits. A natural
+alternative to RSS is the classification error rate. Since we plan to assign an observation in a
+given region to the most commonly occurring class of training observations in that region, the
+classification error rate is simply the fraction of the training observations in that region that do
+not belong to the most common class:
+
+$$E = 1 - \max_k{\hat{p}_{mk}}$$
+
+Here, $\hat{p}_{mk}$ represents the proportion of training observations in the mth region that are
+from the $k_{th}$ class. However, it turns out that classification error is not sufficiently
+sensitive for tree-growing, and in practice two other measures are preferable. The Gini index is
+defined by:
+
+$$G = \sum_{k=1}^{K} \hat{p}_{mk}(1-\hat{p}_{mk})$$
+
+a measure of total variance across the $K$ classes. It is not hard to see that the Gini index takes
+on a small value if all of the $\hat{p}_{mk}$’s are close to zero or one. For this reason the Gini
+index is referred to as a measure of node purity --- a small value indicates that a node contains
+predominantly observations from a single class. When building a classification tree, the Gini index
+is typically used to evaluate the quality of a particular split. It might be used when pruning the
+tree, but the classification error rate is preferable if prediction accuracy of the final pruned
+tree is the goal.
+
+\paragraph{Advantages and drawbacks of trees}
+First, the advantages:
+\begin{itemize}
+    \item Trees are very easy to explain to people. In fact, they are even easier to explain than
+linear regression.
+    \item Some people believe that decision trees more closely mirror human decision-making than do
+the regression and classification approaches ;
+    \item Trees can be displayed graphically, and are easily interpreted even by a non-expert
+(especially if they are small).
+    \item Trees can easily handle qualitative predictors without the need to create dummy variables.
+\end{itemize}
+
+But, unfortunately, trees generally do not have the same level of predictive accuracy as some of
+other regression and classification approaches. However, by aggregating many decision trees, using
+methods like bagging, random forests, and boosting, the predictive performance of trees can be
+substantially improved. We introduce these concepts in the next paragraph.
+
+\subsubsection{Bagging, random forests, boosting}
+
+\paragraph{Bagging}
+The decision trees suffer from high variance. This means that if we split the training data into two
+parts at random, and fit a decision tree to both halves, the results that we get could be quite
+different. In contrast, a procedure with low variance will yield similar results if applied
+repeatedly to distinct data sets; linear regression tends to have low variance, if the ratio of $n$
+to $p$ is moderately large. Bootstrap aggregation, or \textit{bagging}, is a general-purpose
+procedure for reducing the variance of a statistical learning method; we introduce it here because
+it is particularly useful and frequently used in the context of decision trees. Recall that given a
+set of $n$ independent observations $Z_1$, ..., $Z_n$, each with variance $\sigma^2$, the variance
+of the mean of $Z$ of the observations is given by $\frac{\sigma^2}{n}$. In other words, averaging a
+set of observations reduces variance. Hence a natural way to reduce the variance and hence increase
+the prediction accuracy of a statistical learning method is to take many training sets from the
+population, build a separate prediction model using each training set, and average the resulting
+predictions. In other words, we could calculate $\hat{f}_1(x), \hat{f}_2(x), ..., \hat{f}_B(x)$
+using $B$ separate training sets, and average them in order to obtain a single low-variance
+statistical learning model, given by:
+
+$$\hat{f}_{avg}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f}^b(x)$$
+
+Of course, this is not practical because we generally do not have access to multiple training sets.
+Instead, we can bootstrap, by taking repeated samples from the (single) training data set. In this
+approach we generate $B$ different bootstrapped training data sets. We then train our method on the
+$b^{th}$ bootstrapped training set in order to get $\hat{f}^b(x)$, and finally average all the
+predictions, to obtain:
+
+$$\hat{f}_{bag}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f^*}^b(x)$$
+
+This is called bagging.
+
+While bagging can improve predictions for many regression methods, it is particularly useful for
+decision trees. To apply bagging to regression trees, we simply construct $B$ regression trees using
+$B$ bootstrapped training sets, and average the resulting predictions. These trees are grown deep,
+and are not pruned. Hence each individual tree has high variance, but low bias. Averaging these $B$
+trees reduces the variance. Bagging has been demonstrated to give impressive improvements in
+accuracy by combining together hundreds or even thousands of trees into a single procedure.
+
+\paragraph{Random Forests}
+Random forests provide an improvement over bagged trees by way of a small tweak that decorrelates
+the trees. As in bagging, we build a number of decision trees on bootstrapped training samples. But
+when building these decision trees, each time a split in a tree is considered, a random sample of
+$m$ predictors is chosen as split candidates from the full set of $p$ predictors. The split is
+allowed to use only one of those $m$ predictors. A fresh sample of $m$ predictors is taken at each
+split, and typically we choose $m \approx \sqrt{p}$ --- that is, the number of predictors considered
+at each split is approximately equal to the square root of the total number of predictors. In other
+words, in building a random forest, at each split in the tree, the algorithm is not even allowed to
+consider a majority of the available predictors. This may sound crazy, but it has a clever
+rationale. Suppose that there is one very strong predictor in the data set, along with a number of
+other moderately strong predictors. Then in the collection of bagged trees, most or all of the trees
+will use this strong predictor in the top split. Consequently, all of the bagged trees will look
+quite similar to each other. Hence the predictions from the bagged trees will be highly correlated.
+Unfortunately, averaging many highly correlated quantities does not lead to as large of a reduction
+in variance as averaging many uncorrelated quantities. In particular, this means that bagging will
+not lead to a substantial reduction in variance over a single tree in this setting. Random forests
+overcome this problem by forcing each split to consider only a subset of the predictors. Therefore,
+on average $\frac{p-m}{p}$ of the splits will not even consider the strong predictor, and so other
+predictors will have more of a chance. We can think of this process as decorrelating the trees,
+thereby making the average of the resulting trees less variable and hence more reliable.
+
+\paragraph{Boosting}
+We now discuss boosting, yet another approach for improving the predictions resulting from a
+decision tree. Like bagging, boosting is a general approach that can be applied to many statistical
+learning methods for regression or classification. Here we restrict our discussion of boosting to
+the context of decision trees. Recall that bagging involves creating multiple copies of the original
+training data set using the bootstrap, fitting a separate decision tree to each copy, and then
+combining all of the trees in order to create a single predictive model. Notably, each tree is built
+on a bootstrap data set, independent of the other trees. Boosting works in a similar way, except
+that the trees are grown sequentially: each tree is grown using information from previously grown
+trees. Boosting does not involve bootstrap sampling; instead each tree is fit on a modified version
+of the original data set.
+
+Consider first the regression setting. Like bagging, boosting involves combining
+a large number of decision trees, $\hat{f}_1, ...,  \hat{f}_B$.
+
+\begin{verbatim}
+1. Set ˆ f(x) = 0 and ri = yi for all i in the training set.
+2. For b = 1, 2, . . . ,B, repeat:
+(a) Fit a tree ˆ fb with d splits (d+1 terminal nodes) to the training
+data (X, r).
+(b) Update ˆ f by adding in a shrunken version of the new tree:
+ˆ f(x) ← ˆ f(x) + λ ˆ fb(x).
+(c) Update the residuals,
+ri ← ri − λ ˆ fb(xi).
+3. Output the boosted model,
+\end{verbatim}
+
+Output: $\hat{f}(x) = \frac{1}{B} \sum_{b=1}^{B} \lambda \hat{f}^b (x)$
+
+% TODO: fix the above
+
+What is the idea behind this procedure? Unlike fitting a single large decision tree to the data,
+which amounts to fitting the data hard and potentially overfitting, the boosting approach instead
+learns slowly. Given the current model, we fit a decision tree to the residuals from the model. That
+is, we fit a tree using the current residuals, rather than the outcome $y$, as the response. We then
+add this new decision tree into the fitted function in order to update the residuals. Each of these
+trees can be rather small, with just a few terminal nodes, determined by the parameter $d$ in the
+algorithm. By fitting small trees to the residuals, we slowly improve $\hat{f}$ in areas where it
+does not perform well. The shrinkage parameter $\lambda$ slows the process down even further,
+allowing more and different shaped trees to attack the residuals. In general, statistical learning
+approaches that learn slowly tend to perform well. Note that in boosting, unlike in bagging, the
+construction of each tree depends strongly on the trees that have already been grown. We have just
+described the process of boosting regression trees. Boosting classification trees proceeds in a
+similar but slightly more complex way, and the details are omitted here. Boosting has three tuning
+parameters:
+
+\begin{enumerate}
+    \item The number of trees $B$. Unlike bagging and random forests, boosting can overfit if $B$ is
+too large, although this overfitting tends to occur slowly if at all. We use cross-validation to
+select $B$.
+    \item The shrinkage parameter $\lambda$, a small positive number. This controls the rate at
+which boosting learns. Typical values are $0.01$ or $0.001$, and the right choice can depend on
+the problem. Very small $\lambda$ can require using a very large value of $B$ in order to
+achieve good performance.
+    \item The number $d$ of splits in each tree, which controls the complexity of the boosted
+ensemble. Often $d=1$ works well, in which case each tree is a stump, consisting of a single split.
+In this case, the boosted ensemble is fitting an additive model, since each term involves only a
+single variable. More generally, $d$ is the interaction depth, and controls the interaction order of
+the boosted model, since $d$ splits can involve at most $d$ variables.
+\end{enumerate}
