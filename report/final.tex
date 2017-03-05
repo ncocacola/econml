@@ -1,31 +1,23 @@
-\documentclass[a4paper]{article}
-\usepackage{parskip}                        % tex.stackexchange.com/q/49188/
-\usepackage{graphicx}                       % ctan.org/pkg/graphicx
-\usepackage[T1]{fontenc}                    % tex.stackexchange.com/q/664/
-\usepackage{enumitem}                       % tex.stackexchange.com/q/119919
-\usepackage{hyperref}                       % tex.stackexchange.com/q/315461/
-
-% tex.stackexchange.com/q/823/
-\usepackage{xcolor}
-\hypersetup{colorlinks,
-    linkcolor={red!50!black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
-}
+\input{final/packages}
 
 \begin{document}
 
-    \title{Econometrics \& Machine Learning}
-    \author{Amal Elfassihi, Nicolas Khadivi, Bastien van Delft}
-    \date{March 3, 2017}
-    \maketitle
+% Title, quote, abstract, aknowledgements
+\input{final/title}
 
-    \input{final/background}
-    \input{final/experiments-results-econometrics}
-    \input{final/experiments-results-ml}
-    \include{final/bibliography}
+% Content
+\input{final/background}
+\input{final/experiments-results-econometrics}
+\input{final/experiments-results-ml}
+
+% Tables
+% \listoffigures
+% \listoftables
+
+% Bibliography
+\include{final/bibliography}
 
 \end{document}
 
-\bibliographystyle{plain}
-\bibliography{exemple}
+% TODO: input -> include
+% TODO: list of figures, tables
