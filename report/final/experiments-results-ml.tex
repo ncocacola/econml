@@ -1,0 +1,125 @@
+\section{Tree-based Methods}
+
+Now, we are going to start tackling another kind of statistical methods , completely different in its setting and defintions.
+As a result we might expect, some sort of twisting in the result we obtain.
+The first method we applied a basic simple decision tree.
+We are going to keep the same variables all the way down. We are just going to apply some gathering of the variables to check the impact of such actions.
+
+\subsection{Simple Decision Tree}
+
+Let’s first look at the results we get using the exact setting we used in regression, that is keeping all the variables as binary.
+The first thing we have is the pure accuracy of classification. Here the simple tree is not as good as a logistic regression and we obtain something really close to what we had with Linear Regression, with an accuracy of 76\% on average accross the 4 set of data. Behind this accuracy is hidden a very sharp difference in terms of prediction. The model predicts accurately 91,5\% of active people accuretaly, but only 47,5\% of inactive people accurately. So it is, in spite of its simplicity, the best model if we want to capture the active people and not miss one of them.
+
+Now, the big question is how to estimate marginal effects and even more generally how to assess the relative importance of each variable,
+One method which is broadly used for measuring the variables importances is the Gini Index gain per variable. The Gini index is defined
+
+% TODO : formula de gini index en Latex
+
+It is a measure of the total variance accross the K classes (in our case K=2), so in a sense Gini Index is an indication of node purity. The Gini Index takes on small values whenever the probabilities are close to zero or one, that is if the node is ‘pure’. At each split, we use the variable that makes the gain in terms of Gini Index maximum.
+The way to asses a feature importance is then easy and straightforward. It consists of recording the total amount that the Gini Index is decreased due to splits over a given feature. This amount gives us an idea of features’ importance.
+It is to be emphasized that this Gini Index importance is also used in Random Forest or Boosting based on Decision tree, in order to get a sense of importance.
+That method has a tremendous advantage, it is easy and it is directly computed when running the algorithm and consequently it does not require any additional time.
+Here are the results we got for Gini Index importance,
+
+% TODO : tablaau des features importances
+
+
+However, we would like a more accurate and specific measure of a marginal effect. What is the effect of a change in one variable ?
+In order to compute such an effect, we duplicate the database and modify one parameters from 0 to 1 for everybody, we got thus a marginal effect per individual of such a change and we conclude by taking the average over all individuals. That gives a real approximation of the marginal  effect for the average individual. Let there be no misunderstanding, the marginal effect of one variable is totally dependent on the values of the other parameters.
+
+
+% TODO : tableau des effets marginaux brutes forces.
+
+
+It is here crucial to observe, that the parameters with high Gini importance do have a fairly high marginal effect but it is impossible to infer the marginal effect of a change in one variable only based on Gini importance. Gini importance provides indeed a relative importance somehow but it is non directly linked with marginal effects.
+Thus we do find a way to statistically measure marginal effect of change in a simple decision tree.
+
+Now we are going to have a closer look at those marginal effect.
+First we are going to see what is the importance of the mean value of marginal effect. Indeed, it makes a huge difference if the marginal effects are widespread around the average or on the opposite if the dispersion is really small.
+For that we look at first the standard error of the marginal effect. But this coeficient proved not to be enough, we would need to use a study of the skewness and the kurtosis. So what we opted for is simply studying the distribution itself of those marginal effect.
+Here is an example of the distribution of the marginal effect of being a foreigner.
+
+% TODO : Ajouter l’histogramme de la distribution de l’effet marginal pour etranger dans le cas d’un arbre simple.
+
+
+We found a huge quantity of individuals for whom the marginal effect is simply zero. It means that the variable "etranger\_"has been used as a split in their way down to the last node (or simply that the individual was a foreigner in the previous database already).
+Thus we have a fair vision of the marginal effect of a variable.
+On top of that, we woulde like to build a 95\% confidence interval for the value of the mean marginal effect . To do so we used bootstrap. We reproduced the database by picking individuals with replacement. And a new decision tree is fitted to each new database. Then we compute the mean marginal effect of the variables in each tree. And then we construct the interval by excluding the 2,5\% biggest mean values, and the 2,5\% smallest values.
+Here are our results :
+
+% TODO : tableau du bootstrap for simple tree.
+
+The results we obtained for a simple tree are pretty satisfying, it is henceforth easy to infer a sense of causality in the model.
+Now what we are going to try is to apply the same methods to more subtle algorithms.
+
+Indeed, it is clear that the Simple Decision tree is limited. The quality of the predictions are not any better in our case and don’t justify the time spent to figure out the marginal effects. However, Simple tree, classify the individual in a very different way then regression methods and even though it is really simple it will still fit really better to a certain class of problems. As a result, growing a tree or two to see how it fits the data should be done most of time.
+
+In order to exploit the nature of the tree more fully, we tried to grow a tree using directly categorical variables and not binary variables only (as long as the variables could be ordered). We did obtain slightly better result on average (77,5\%) but the most striking part is that we predict the people who are active even better : 93\% .
+
+\subsection{Random Forest}
+
+We won’t expand here on how does random forest work as we did so before. However, let’s keep in mind that Random Forest algorithm is based on a Simple Decision Tree and that introducing stochastic process it is expected to improve the prediction quality.
+
+In our very specific case, with only a few independent variables to chose from and in which all of them are binary or at most categorical, the prediction accuracy we get is slightly disappointing regarding the complexity of the algorithm.
+By testing many a possibility the overall accuracy we can reach is below 78\%. Which is pretty similar to the one we can get with a simple tree.
+However, using categorical variables for "age" and "diploma" instead of binary variables, and using a maximum depth of tree of 9 and a maximum feature per tree of 5, we managed to reach a 93,5\% accuracy for prediction of active people which is the best we’ve found so far. The cost for that is an accuracy below 50\% (approximately 46\% over the four quarters) for predicting inactive people.
+The results we obtained here are somewhat disappointing. Nevertheless, it is to be emphasized that this is mainly due to our setting. In general, Random Forest does give better prediction than a simple tree. Consequently, in that case a Logistic Regression seems like a better choice.
+One thing which is striking though is that the simple tree is no good at predicting the class of inactive people and as a result so is Random Forest. Again, it may really depend on our setting, but it does seem like Random Forest is an improvement of a Simple Tree but conserves the main features of the simple tree.
+That is something we will dig deeper now when looking at the marginal effects.
+
+\paragraph{Marginal Effects}
+
+We used the exact same methods than before by duplicating the database. So let’s directly focus on results.
+As we did for the simple tree we computed the Gini Index importance.
+However a big limit here is that as soon as not only binary variables are used but also categorical variables are used, it is even harder to infer a link between marginal effects and marginal effects. As for marginal effects, the idea is very similar we changed all the value of one feature to a certain value and compute the change on prediction.
+So for the easiness of explanation and comparison I will now focus on the model we ran using binary variables.
+
+First thing we are going to look at is the Gini Index Importance. We expect to find some similarities between the Gini Importance in simple tree and in Random Forest. Obviously we expect the least important parameters in simple tree to be more important in Random Forest due to the randomization of the choice of independent variables.
+Here is the results we obtain :
+
+% TODO : Tableau entropy_sorted de random forest
+
+And here were the results we obtain for Simple Tree :
+9
+% TODO : Tableau Gini Index Importance Simple Tree
+
+
+As we can see the main features are still the same even though the values varie a little bit. The gap between the most important and the least important variables is smaller. A few changes occured but overall values are somewhat comparable.
+Now, let’s look closer at the real mean marginal effects we computed empirically. We do expect to find some kind of relationships between the ones found for Simple Tree and those we obtained now.
+
+
+% TODO : Tableau des marginal effects brute_force du random forest.
+
+Here, as we can see, in absolute value, the marginal effect on average of dip11 (highest degree) is the biggest. However dip11 is not a very important in terms of Gini Index importance. It means it terms of purity gain, it wasn’t significant. One reason could actually that because few people have dip11, using it at a split at the very beginning does not produce a subsequent gain in purity compared to other variable such as age15 for instance. As a result dip11 is only use as a very late split and so its purity gain may be regarded as negligeable. That actually emphasizes the point we already made earlier with the simple tree. The Gini Index Importance is somewhat interesting for its simplicity but it just gives a idea about relative marginal effects and it is only relevant when the basis of people with the two features are sort of the same size.
+
+As for the mean marginal values we obtain, the first thing we can emphasize is that once again it does lead to very different value, be it in terms of direction (positive or negative) or distance(absolute value). In turn, it is somewhat easy to deduce from this table a relevant sense of causality, that is we can picture what feature is important is the prediction we make on a individual.
+In order to gain some statistical fundations to our mean marginal effects, we used bootstrap to calculate an 95\% Confidence Interval.
+
+% TODO : Bootstrap confidence interval
+
+Such computation is not only aesthictics it is pure necessity if we want to base any reasoning upon our results. It is to be said that such computation is very time consuming.
+
+
+% TODO : STD table obtain by brute force
+Once we have such interval, given the dispersion of the marginal effects around the average which is very spread it is really interesting to have a deeper look at the distribution of the marginal effect around the mean. For that we just infer it from the duplication of the DataBase, but it could be interesting to  reinforce the relevance of such values by using Bootstrap but again, a look at the time it costs makes it hard to complete.
+
+% TODO : Distribution by histogramme of age15 , dip11, etranger
+
+
+The distributions highlight the fact that the marginal effects are really dependent on the values of other parameters. But still, with all we have gotten, it does seem like we can figure causility in Random Forest almost as well as in Logistic Regression, the only big trouble is the computation it requires. Especially, if we want to have a good accuracy of any marginal effect, that is for any new given individual we could compute the gain/loss of having such feature or not, we would need huge DataBase information so we could be able to assess it. Such a huge DataBase would in turn need a great deal of time to be processed. As a consequence, the more precision we want, the more data and time we need. That is a huge downer compare to a Logit wherein marginal effects can be computed directly and straighforwardly. We found that even in the case of binary variable (non continuous), the mathematical formula is still pretty accurate.
+The last thing we would like to focus on is the Odds-ratios. That is, the odds given a certain feature divided by the odds for the reference average individual.
+
+% TODO : odds-ratios formula
+
+A value close to 1 would mean a small change in odds overall and as a result a very small marginal impact of changing the value from the reference to the new one (for instance for any degree, we look at the change from no degree to a certain degree). A value close to 0 would mean that such variable induces a tendency to have a job, and a value superior to 1 indicates a tendency to be more inactive when one individual has such feature.
+
+
+% TODO : Tableau des odds ratios bis
+
+It is important to notice that in some cases, we did find a high mean marginal effect but in the particular case where we look at the reference individual the marginal effect is neglectable. The case for instance of age30. That means that being in his or her 30s or in his or her 50s in terms of prediction is very similar.
+Another interesting point is that Odds-ratios are easily compared between models. And not surprisingly we find that the ratios are very similar between Simple Tree and Random Forest, slightly less spread in the case of Random Forest which kind of makes sense when we think about the algorithm itself, the variables not used much in one simple tree may take more rôle when it comes to random forest due to the randomization of predictors selection.
+
+
+It is indeed possible to infer causality within Random Forest algorithm and to assess the importance of each predictors according to other predictors values. The tremendous limit of that though is the computation time it requires and the amount of diverse data we need to find out relevant values. However, assuming we can have as much data as we might need and that very powerful machine are available, it would make sense to use Random Forest assuming the prediction it makes is more accurate. Given that the way of predicting between a tree-based method or a functional form such a logit is very different, in a fair number of cases Random Forest will prove better than any regression forms and in that case Random Forest should not be ruled out because it lacks a sense of causality. Indeed, if it is worth it, causality is computable.
+
+
