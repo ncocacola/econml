@@ -1,0 +1,92 @@
+\section{Econometric Methods}
+What we mean btoh econometrics methods are the methods based on regressions which are typically used on econometrics. We oppose these methods to the tree-based methods we are going to discuss later and that we classify as Machine Learning methods.
+I am going to give the results we obtain using Linear Regression using Ordinary Least Square first and second those using Logistic Regression. We also ran a Probit regression, however as results and interpretation are both pretty similar to those we are going to have by Logistic regression we will not go into further details regarding that particular method, and we should recommend any reader to read through the description on Logit method.
+For the sake of clarity, we will procede in this way : first giving the results, then giving an interpretation and then focusing on advantages/disadvantages of such a method.
+
+\subsection{Linear Regression}
+Linear Regression is arguably the simplest method we are going to use. So let’s see what it gives us.
+
+% TODO: tableau du summary de Linear Regression
+
+It is to be said that in order to classify a binary variable, what a regression gives us is a probability of success. Then we can indeed conclude whether an individual is more or less likely to belong to one category or the other.
+The R-squared gives us here the idea that approximately 26\% of the fact that an individual is active or not is explained by our set of independant variables. It may seems low however it is truly interesting especially if we are able to depict these 25\% satisfyingly.
+Assuming one bases one’schoice on the probability he or she gets from the linear regression, he would actually predict right 76\% of the individuals. However, things to be said is that method predicts people who are employed very well, approximately 88\% of right predictions. At the opposite, the models is no good at predicting inactive people and miss the target once out of two.
+If all that sounds like a fairly good prediction, it must be added that as 65\% people are active, a uniform guessing woulb be right 65\% of times. So this methods does improve accuracy. However, it is still far from being a good prediction, and the predictions are very unbalanced. If one needs to get all the unemployed people, such a method is far from being appropriate.
+It is important to say that all the independant variables we used proved to be statistically    significant.
+(We actually used two different libraries two compute the model and it is happily that we found that they are both equivalent.)
+
+\paragraph{Marginal Effects}
+Now, it is time to to turn to what truly attracts our attention : how is our prediction built, what causes the result we get. In other words, we will look at the marginal effects.
+The very thing which is nice whith linear regressions is that the coeficients we get are simply the marginal effects. As a result it is really convenient to order variables by importance. In our setup, we can easily see that the most important variables are dip10, dip11, dip30, dip31, and age15. Basically, the degrees you get and your age are important parameters.
+All those parameters are the marginal effects of belonging to one category instead of belonging to the reference group (no degree, more than 50 years old, male, french, in france metropolitan, living in a rural area with no kids).
+As the simplest model that is pretty much all we can say.
+
+The limits of this model are easy to get. It is good as predict or highlight any linear relationship between variables. If the underlying relationship is of any other kind, the model will be inaccurate. Another limit is that in our particular case, we obtain values superior to one (or inferior to 0) . The problem being that we are trying to get a probability, so a value between 0 and 1. As a consequence, the model doesn’t look like the best one we can find.
+However, the main advantages that justify the fact linear regressions are widely used is the simplicity of interpretation. We can directly infer the causality relationships, compute statistical significance, and R-squared to get an idea of how close to explaining the dependant variable we are.  Another main advantage is the simplicty of the computations behind which makes this methods fast and easy to apply to hugemendous databases.
+
+\subsection{Logistic Regressions}
+The logistic regression which is slightly more complicated than the linear regression will have our attention now.
+
+% TODO: Tableau summary de Logit
+
+Let’s first look at the results we get. The prediction accuracy is very similar to the one we get from a linear regression. However, we do get a better prediction of the people who are inacive (close to 55\% instead of 48\%). So in terms of prediction we do get a slightly better result using logit.
+Now, the question is more how to interpret it, and how to sense causality using this method.
+
+\paragraph{Marginal effect}
+Mathematically, it is indeed possible to derive the marginal effect of an independant variable. However, in our specific case, we only have binary variable, as a result, even though using derivative gives us a sense of the marginal effect, it may be different in reality. On top of that, the marginal effect of a variable is linked to the value of other independant variables. So what we are going to focus on, is the mean marginal effects. That is the marginal effect of one variable assuming that the other variables’ values are the mean values for each of them.
+So we used another method to get a empiric mean marginal effects, a method we are going to apply later on to all the machine learning methods. We duplicate the database, and change all the values of one variable to 1. Then we make the predictions we the previously fitted model on the new modified database. Then we take the mean of the differences of the new predicitons minus the previous predictions. This gives us an empiric mean marginal effect for each variable.
+We also wanted to get a sense of the rule of thumb usually used for the logit method, and we do find that in our case where the independant variables are binary, such rule is really inaccurate. Moreover, the values we got mathematically are different from the empiric ones due to the non continuity of the independent variables. However, in all the variables for which we have enough data, the values are really close to one another which emphasizes the quality of our marginal effects.
+
+% TODO: Tableau des effets marginaux pour logit
+
+It is really easy to realize that the bigger the absolute value of a variable the bigger is its effect on the prediction.
+Finding marginal effects allow us to order the variables according to their importance and to sense what determines the prediction we make.
+
+In the case of Logit we also computed odds-ratios to get an idea of the importance that having one parameter or not makes. This is going to be interesting to compare with the odds-ratios for others algorithms.
+
+% TODO : Formula of the odds ratios :
+
+the odds :
+(P(Y=1|X=1,reste des X same values)/P(Y=0|X=1, reste des X same values))
+And that ODDS is divided by the same things replacing (|X=1) by (|X=0),
+
+% TODO : Tableau des odds ratio (une seule colonne!! pas le tableau dans github)S
+
+% (code à faire tourner :
+
+% Odds_ratios_ = pd.DataFrame()
+
+% for category in filters:
+%     for pivot in params[category]:
+
+%         non_pivots = [x for x in params[category] if x != pivot]
+%         X_one = X["t1"].copy()
+%         X_one[non_pivots] = 0
+%         X_one[pivot] = 1
+%         proba_one = reg_logit_sk.predict_proba(X_one).T[1].mean()
+%         #print(pivot),
+%         #print(proba_one)
+%         odds_one = proba_one/(1-proba_one)
+%         X_second = X["t1"].copy()
+%         X_second[pivot]=0
+%         X_second[non_pivots] = 0
+%         proba_second = reg_logit_sk.predict_proba(X_second).T[1].mean()
+%         #print(proba_second)
+%         odds_second = proba_second/(1-proba_second)
+%         Odds_ratios_.loc[pivot, "ODDS-RATIOS"]=odds_one/odds_second
+
+% Odds_ratios_
+
+%         )
+
+An odds-ratio close to 1 means that the variable doesn’t add a lot of information. If close to zero, it means the variable stronly increases the probability that the individual works, and a ratio far beyond one indicates the opposite.
+As a result we can conclude that being young makes it more likely that you are inactive, and having a strong degree makes it more likely for you to work.
+
+According to the shape of the curve of a logistic regression, it is clear that the marginal effects are the biggest at the mean individual and get close to zero when you get extreme. So it even makes more sense to compare the marginal effects at the mean.
+
+All this makes it possible at a fairly low cost to get the marginal effects of the independent variables. It is by the way to be emphasized that with the logit method we can get the marginal effects of an independent variable at any point (any individual) and compute it analytically.
+This analytical computation is something we will lose with the Machine Learning algorithms.
+
+The limits of the model are due to its definition. If the underlying relationship between variables is far from the logit curve, the model cannot predict accurately. The model is significantly better than the linear model to predict binary/categorical variables.
+Its main advantage is the mix of a fair accuracy and a a fair simplicity which makes it pretty easy to apply to many a database and to interpret results.
+The interpretation of the results through a defined functional form is one of the greatest advantage of those regression models. Indeed it makes it easy to use, to interpret and to explain to other people. People with no background in statistics can understand the results given by such methods.
