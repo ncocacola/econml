@@ -10,5 +10,68 @@ Our objective is twofold:
     \item compare interpretability of the models and recover marginal effects if possible
 \end{enumerate}
 
-This project is supervised by \href{http://www.crest.fr/pagesperso.php?user=3045}{Dr. Romain
+The project was supervised by \href{http://www.crest.fr/pagesperso.php?user=3045}{Dr. Romain
 Aeberhardt} and \href{http://thomas-larrieu.strikingly.com/}{Thomas Larrieu}.
+
+
+\subsection{Choice of database and methods}
+We have downloaded the \textit{Enqu\^ete emploi en continu 2015} database from the INSEE website.
+\textit{Enqu\^ete Emploi} is one of the central elements of the statistical system of knowledge of
+employment and unemployment. It is the only source for implementing the definition of unemployment
+within the meaning of the International Labor Office. The survey provides original data on
+occupations, female and youth activity, hours of work, precarious employment and wages. It makes it
+possible to better understand the situation of the unemployed as well as changes in the situation
+with regard to work: change from school to work, retirement activity, changes in occupation.
+\textit{Enqu\^ete Emploi} contains detailed data on training.
+
+
+\subsection{Explanation on econometrical methods}
+\subsubsection{Linear Regression}
+
+Suppose that we have $n$ distinct predictors. Then the multiple linear regression model takes the
+form:
+
+\begin{equation}
+    y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_n x_n + \epsilon
+\end{equation}
+
+where $x_i$ represents the i$^{th}$ predictor and $\beta_i$ quantifies the association between that
+variable and the response. We interpret $\beta_i$ as the average effect on $y$ of a one-unit
+increase in $x_i$, holding all other predictors fixed.
+
+The regression coefficients $\beta_0, \beta_1, ..., \beta_n$ are unknown, and must be estimated.
+Given estimates $\hat{\beta_0}, \hat{\beta_1}, ..., \hat{\beta_n}$, we can make predictions using
+the formula:
+
+\begin{equation}
+    \hat{y} = \hat{\beta_0} + \hat{\beta_1} x_1 + \hat{\beta_2} x_2 + ··· + \hat{\beta_n} x_n
+\end{equation}
+
+The parameters are estimated using the same least squares approach, that is, we choose $\beta_0,
+\beta_1, ..., \beta_n$ to minimize the sum of squared residuals.
+
+Once we have fit the multiple regression model, it is straightforward to predict the response $y$ on
+the basis of a set of values for the predictors $x_1, x_2, ..., x_n$. However, there are three sorts
+of uncertainty associated with this prediction:
+
+\begin{enumerate}
+    \item The coefficient estimates $\hat{\beta_0}, \hat{\beta_1}, ..., \hat{\beta_n}$ are estimates
+for $\beta_0, \beta_1, ..., \beta_n$. That is, the least squares plane $\hat{y} = \hat{\beta_0} +
+\hat{\beta_1} x_1 + ··· + \hat{\beta_n} x_n$ is only an estimate for the true population regression
+plane $f(x) = \beta_0 + \beta_1 x_1 + ··· + \beta_n x_n$. The inaccuracy in the coefficient
+estimates is related to the reducible error. We can compute a confidence interval in order to
+determine how close $\hat{y}$ will be to $y = f(x)$.
+
+    \item Of course, in practice assuming a linear model for $f(x)$ is almost always an
+approximation of reality, so there is an additional source of potentially reducible error which we
+call model bias. So when we use a linear model, we are in fact estimating the best linear
+approximation to the true surface. However, here we will ignore this discrepancy, and operate as if
+the linear model were correct.
+
+    \item Even if we knew $f(x)$ --- that is, even if we knew the true values for $\beta_0, \beta_1,
+..., \beta_n$ --- the response value cannot be predicted perfectly because of the random error
+$\epsilon$. How much will $y$ vary from $\hat{y}$? We use prediction intervals to answer this
+question. Prediction intervals are always wider than confidence intervals, because they incorporate
+both the error in the estimate for $f(x)$ (the reducible error) and the uncertainty as to how much
+an individual point will differ from the population regression plane (the irreducible error).
+\end{enumerate}
