@@ -15,7 +15,7 @@ If all that sounds like a fairly good prediction, it must be added that as 65\% 
 It is important to say that all the independant variables we used proved to be statistically    significant.
 (We actually used two different libraries two compute the model and it is happily that we found that they are both equivalent.)
 
-\paragraph{Marginal Effects}
+\subsubsection{Marginal Effects}
 Now, it is time to to turn to what truly attracts our attention : how is our prediction built, what causes the result we get. In other words, we will look at the marginal effects.
 The very thing which is nice whith linear regressions is that the coeficients we get are simply the marginal effects. As a result it is really convenient to order variables by importance. In our setup, we can easily see that the most important variables are dip10, dip11, dip30, dip31, and age15. Basically, the degrees you get and your age are important parameters.
 All those parameters are the marginal effects of belonging to one category instead of belonging to the reference group (no degree, more than 50 years old, male, french, in france metropolitan, living in a rural area with no kids).
@@ -32,7 +32,7 @@ The logistic regression which is slightly more complicated than the linear regre
 Let’s first look at the results we get. The prediction accuracy is very similar to the one we get from a linear regression. However, we do get a better prediction of the people who are inacive (close to 55\% instead of 48\%). So in terms of prediction we do get a slightly better result using logit.
 Now, the question is more how to interpret it, and how to sense causality using this method.
 
-\paragraph{Marginal effect}
+\subsubsection{Marginal effect}
 Mathematically, it is indeed possible to derive the marginal effect of an independant variable. However, in our specific case, we only have binary variable, as a result, even though using derivative gives us a sense of the marginal effect, it may be different in reality. On top of that, the marginal effect of a variable is linked to the value of other independant variables. So what we are going to focus on, is the mean marginal effects. That is the marginal effect of one variable assuming that the other variables’ values are the mean values for each of them.
 So we used another method to get a empiric mean marginal effects, a method we are going to apply later on to all the machine learning methods. We duplicate the database, and change all the values of one variable to 1. Then we make the predictions we the previously fitted model on the new modified database. Then we take the mean of the differences of the new predicitons minus the previous predictions. This gives us an empiric mean marginal effect for each variable.
 We also wanted to get a sense of the rule of thumb usually used for the logit method, and we do find that in our case where the independant variables are binary, such rule is really inaccurate. Moreover, the values we got mathematically are different from the empiric ones due to the non continuity of the independent variables. However, in all the variables for which we have enough data, the values are really close to one another which emphasizes the quality of our marginal effects.
