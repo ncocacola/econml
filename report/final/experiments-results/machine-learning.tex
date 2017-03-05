@@ -44,7 +44,7 @@ Here is an example of the distribution of the marginal effect of being a foreign
 
 We found a huge quantity of individuals for whom the marginal effect is simply zero. It means that the variable "etranger\_"has been used as a split in their way down to the last node (or simply that the individual was a foreigner in the previous database already).
 Thus we have a fair vision of the marginal effect of a variable.
-On top of that, we woulde like to build a 95\% confidence interval for the value of the mean marginal effect . To do so we used bootstrap. We reproduced the database by picking individuals with replacement. And a new decision tree is fitted to each new database. Then we compute the mean marginal effect of the variables in each tree. And then we construct the interval by excluding the 2,5\% biggest mean values, and the 2,5\% smallest values.
+On top of that, we woulde like to build a 95\% confidence interval for the value of the mean marginal effect . % TODO so we used bootstrap. We reproduced the database by picking individuals with replacement. And a new decision tree is fitted to each new database. Then we compute the mean marginal effect of the variables in each tree. And then we construct the interval by excluding the 2,5\% biggest mean values, and the 2,5\% smallest values.
 Here are our results :
 
 % TODO : tableau du bootstrap for simple tree.
@@ -122,4 +122,36 @@ Another interesting point is that Odds-ratios are easily compared between models
 
 It is indeed possible to infer causality within Random Forest algorithm and to assess the importance of each predictors according to other predictors values. The tremendous limit of that though is the computation time it requires and the amount of diverse data we need to find out relevant values. However, assuming we can have as much data as we might need and that very powerful machine are available, it would make sense to use Random Forest assuming the prediction it makes is more accurate. Given that the way of predicting between a tree-based method or a functional form such a logit is very different, in a fair number of cases Random Forest will prove better than any regression forms and in that case Random Forest should not be ruled out because it lacks a sense of causality. Indeed, if it is worth it, causality is computable.
 
+
+\subsection{Boosting}
+As our last algorithm pick, we opted for boosting. We are going to use Adaboost algorithm available in scikit-learn and take as base estimator a Simple Decision Tree.
+First thing to emphasize is the complexity of the algorithm. Indeed, the fact that the computation of each new tree relies on the previous trees makes it impossible to parallelize fully. As opposed to random forest for instance where having 200 cores makes the computation fast, boosting is not sensitive to that.
+
+The results we obtained for boosting are as for the ones in the case of random forest very disappointing. The prediction is hardly any better than the one a Logit would give us. The general accuracy is around 78\%. Once again, the algorithm is great at predicting 1’s (~91,5\%) but sucks at predicting 0’s (~52\%). As the algorithm is based on a simple tree it makes sense to find here once again the main characteristics of the simple tree we grew earlier, especially considering we used the very same predictors.
+However disappointing the results we got are, it is to be mentionned that in many cases boosting algorithms outperform all the other models we have applied. The fact this in this very situation, it does not occur is not a contradiction. Let’s consider a case where the underlying true model is a linear function of the predictors we chose. In such situation, no model would outperform a simple linear regression. Indeed a boosting algorithm would do its best to approximate the linear model. However in many a situation, boosting is the best ally a data scientist may find in order to make prediction based on a revealed database.
+Our model is first very specific with only binary variables and we do not possess enough informative variable to truly make a difference.
+With that being said, it is now still relevant to see  firstwhether the marginal effects we obtained are relevant,second how can we statistically make them significant, and last how can we interpret and use them to infer the hidden causality relationships.
+
+\subsubsection{Marginal Effects}
+
+We have applied the very same method to this model in order to find out some marginal effects per variable. So, once again, what we obtain is a mean marginal effect per variable, that is what is the marginal effect of such change on such variable on average in the database.
+
+% TODO : Tableau des mean et std marginal effect brute force
+
+First thing we do notice is the relatively small absolute values we have. It means that the marginal effects (on average) seem less spread towards extreme values. The dispersion around the mean is still very consequent but the means themselves are way smaller than we obtained for Random Forest or Simple Tree for instance. One way to explain such fact could be to get back to the algorithm itself. Thinking the boosting grows trees recursively and based on previous ones’ residuals, it may make some sense to infer that more variable would be involved in the prediciton process and especially that the most important variables (considering previous models) will lose a bit of their dominance. As a result, boosting algorithm would sort of even out the impact of each variable.
+We can of course still denote some differences, for instance dip11 has on average the biggest impact on the final prediction. Here is the distribution of the marginal effects around the mean :
+
+% TODO : histogramme effet marginal de dip11_
+
+The distribution is very important to understand how it works indeed. Some variable could have opposite marginal effect depending on some other features so it important to try to perceive those.
+So far I did not mention the Gini Index importance (or entropy since we used entropy as our purity estimator) because actually in this specific case the weaknesses of that notions are simply too striking. In the case of boosting, founding any sensible reasoning upon those figures would be very misleading if we compare to the real impact (marginal effect) the predictors have. So, we suggested not to rely on those figures before, in this setting we would warmly recommend not to infer causality using such results.
+
+% TODO : boostrap table confidence interval.
+
+In order to make sure the the mean we compute are statistically significant we compute a 95\% confidence interval using bootstrap. Here we cannot hide the fact that the computation takes a great deal of time. And to be honest, it makes that model very costly. It does not make sense to base one’s reasoning on trial and error everytime a boosting algorithm is involved. It is way too time-consuming.
+
+
+At last we wanted to have a quick look at the odds ratios.
+And coherently we found that the odds ratios were not as spread as before and tend to stick around one way more than they did before. This reinforces the idea we developped that marginal effects are less distinct than before and they range within smaller absolute values, leading in turn to closer-to-one odds-ratios.
+It is somewhat interesting to find out those differences between Random Forest and Boosting. It would certainly indicate the boosting will try to look at a bigger picture of any individual whereas it seems that Random Forest would tend to bestow more importance to the main characteristics of an individual, It would be really interesting to test such intuition on different models and different databases to make it more rational.
 

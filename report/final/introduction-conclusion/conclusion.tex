@@ -1,2 +1,20 @@
 \chapter{Conclusion}
 % TODO(P1): add a conclusion
+
+\subsection{Comparison}
+
+\begin{itemize}
+    \item no algorithm is better in every aspect, there are always cases in which one is better than the others and vice versa
+    \item Predictions can be accurate on different aspects (precise on 0 or accurate on 1’s for instance) so it is crucial to be specific about what we really target
+    \item Models are not all as costly, so if a simple one is good enough better stick to the simplest
+    \item Marginal effects are always inferable, at different costs and with different accuracy but it is always possible to get a sense of what’s going on.
+    \item Boosting proved here to sort of mitigate the marginal effects making it more complicated to interpret. However, a sufficient database, and a lot of time makes it possible to compute the distribution of marginal effects and to infer a sense of causality.
+    So the first question is what is more important simplicity and accuracy and then opting for the model offering the better trade-off.
+\end{itemize}
+
+\subsection{Opening}
+
+\begin{itemize}
+    \item The time it costs to compute the marginal effects of a model using boosting algorithm or RF algorithm is really huge, and the amount of data to get accurate value is tremendous. These are clearly the limits. It seems metaphysically impossible to predict perfectly and understand why it is so good, and understand the roots of the predictions. In a way, it might be possible to guess as close as needed the future/a certain data but not to change it. The more accurate it gets the more blurry it gets and trying to enlight the darkness is getting more and more costly as accuracy is getting higher and higher. So a key is to set the target precisely and not to try to do overmuch.
+    \item It would be very interesting to continue such studies on other databases, with other underlying relations, in order to find out some more clarity in the way the algorithm give the variables their importances.
+\end{itemize}
