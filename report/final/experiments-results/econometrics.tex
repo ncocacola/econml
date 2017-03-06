@@ -123,17 +123,17 @@ As a result we can conclude that being young makes it more likely that you are i
     \label{fig:logit_odds_ratios}
 \end{figure}
 
+% TODO(P2): not sure what the next couple of paragraphs are about
 % begin{attempt-at-rewriting}
 % When looking at the shape of the curve of a logistic regression (see the \textit{Background} section), it is clear that marginal effects are biggest at the "mean individual" and get closer to zero for more "extreme" profiles.
 % end{attempt-at-rewriting}
 
-% TODO(P1): rewrite the next three paragraphs
+% According to the shape of the curve of a logistic regression, it is clear that the marginal effects are the biggest at the mean individual and get close to zero when you get extreme. So it even makes more sense to compare the marginal effects at the mean.
 
-According to the shape of the curve of a logistic regression, it is clear that the marginal effects are the biggest at the mean individual and get close to zero when you get extreme. So it even makes more sense to compare the marginal effects at the mean.
+% All this makes it possible at a fairly low cost to get the marginal effects of the independent variables. It is by the way to be emphasized that with the logit method we can get the marginal effects of an independent variable at any point (any individual) and compute it analytically.
+% This analytical computation is something we will lose with the Machine Learning algorithms.
 
-All this makes it possible at a fairly low cost to get the marginal effects of the independent variables. It is by the way to be emphasized that with the logit method we can get the marginal effects of an independent variable at any point (any individual) and compute it analytically.
-This analytical computation is something we will lose with the Machine Learning algorithms.
+\subsubsection{Limits}
+The limits of logit exist by definition of the model. If the underlying relationship between variables is far from the logit curve, the model cannot predict accurately. In contrast, the model is significantly better than the linear model to predict binary/categorical variables --- its main advantage is the combination of fair accuracy and simplicity.
 
-The limits of the model are due to its definition. If the underlying relationship between variables is far from the logit curve, the model cannot predict accurately. The model is significantly better than the linear model to predict binary/categorical variables.
-Its main advantage is the mix of a fair accuracy and a a fair simplicity which makes it pretty easy to apply to many a database and to interpret results.
-The interpretation of the results through a defined functional form is one of the greatest advantage of those regression models. Indeed it makes it easy to use, to interpret and to explain to other people. People with no background in statistics can understand the results given by such methods.
+This makes it cheap to apply to large databases, while also providing results that are easy to interpet and explain, even to people with no background in statistics --- a great advantage that applies to regression models in general.
