@@ -9,7 +9,7 @@ We used the following classical econometric methods on the \texttt{eec15} databa
 
 For each of these methods, we used the same methodology: first, fit the model on \texttt{trim=1} data, then use the model to predict the probability that the \texttt{actop\_} variable is equal to 1 (i.e. that the observed person is \textit{unemployed}) for \texttt{trim=[2,3,4]} observations, and compare these results with the true values to assess the accuracy of the method.
 
-Note that due to the close proximity of the logit and probit methods, we will only discuss the results of the logit model. We recommend any interested reader to go through the code and results of the probit method in the Appendix.
+Due to the close proximity of the logit and probit methods, we will only discuss the results of the logit model. We recommend the interested reader to read through the code and results of the probit method online.
 
 For the sake of clarity, for each model, we will first give the results, then provide an interpretation, focusing on the advantages and disadvantages of each method.
 
@@ -18,12 +18,12 @@ As described in the \textit{Background} section, linear regression is arguably t
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.33]{img/linear_regression_summary}
+    \includegraphics[width=0.6\textwidth]{img/linear_regression_summary}
     \caption{Linear Regression Summary}
     \label{fig:linear_regression_summary}
 \end{figure}
 
-Recall that when to classifying a binary variable, the result of a regression will be a \textit{probability of success}, which we can then use to conclude whether an individual is more or less likely to belong to one category or the other. The R-squared from this regression tells us that approximately 26\% of the explanation for an individual being active or not is explained by our set of independant variables. This number may seem low, but the regression is truly interesting if we look at the number/proportion of \textit{true positives} and \textit{true negatives} (or \textit{sensitivity} and \textit{specificity}):
+Recall that when used to classify a binary variable, the result of a regression will be a \textit{probability of success}, which we can then be used to conclude whether an individual is more or less likely to belong to a category or the other. The R-squared from this regression tells us that approximately 26\% of the explanation for an individual being active or not is explained by our set of independant variables. This number may seem low, but the regression is truly interesting if we look at the number/proportion of \textit{true positives} (or \textit{sensitivity}) and \textit{true negatives} (or \textit{specificity}):
 
 \begin{center}
     \begin{tabular}{lcccc}
@@ -44,12 +44,12 @@ We now turn to the information we were really looking for with this regression, 
 
 We can see from the summary table (in Figure~\ref{fig:linear_regression_summary}) that the most important variables are \texttt{dip10\_}, \texttt{dip11\_}, \texttt{dip30\_}, \texttt{dip31\_} and \texttt{age15\_}. In other words, the level/degree of education, and age are important parameters in determining whether someone is unemployed or not.
 
-Since all of our regressors are binary (dummy) variables, the marginal effect is the increase/decrease in probability of being unemployed (\texttt{actop\_=1}) relative to the reference group (no degree, more than 50 years old, male, French, living in a rural area in metropolitan France with no children).
+Since all of our regressors are binary (dummy) variables, the marginal effect is the increase/decrease in probability of being unemployed (\texttt{actop\_=1}) relative to the reference group.
 
 \subsubsection{Limits}
 The limits of the linear regression model are somewhat obvious: it is good if the relation between variables is (approximately) linear, but if the underlying relationship is of any other kind, the model will be inaccurate. Another limit, in our particular case, is that we \textit{may} obtain values superior $>1$ or $<0$, when we are in fact only dealing with binary values and hoping to get probabilities.
 
-However, the main advantage that justifies the wide usage of linear regressions is the simplicity of interpretation. We can directly infer the causality relationships, compute statistical significance, and the R-squared to get an idea of how close we are to explaining the dependent variable. Another advantage is the simplicity of the computations, which makes this method both easy and fast to apply to large databases.
+However, the main advantage that justifies the wide usage of linear regressions is the simplicity of interpretation. We can directly infer the causality relationships, compute statistical significance, and the R-squared to get an idea of how close we are to explaining the dependent variable. Another advantage is the low cost of computation, which makes this method both easy and fast to apply to large databases.
 
 
 \subsection{Logistic Regression}
@@ -57,7 +57,7 @@ Logistic (or \textit{logit}) regression is slightly more complicated, but also b
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.4]{img/logit_regression_summary}
+    \includegraphics[width=0.6\textwidth]{img/logit_regression_summary}
     \caption{Logit Regression Summary}
     \label{fig:logit_regression_summary}
 \end{figure}
@@ -79,7 +79,7 @@ The prediction accuracy is very similar to what we get with a linear regression,
 \subsubsection{Marginal Effects}
 While it is possible, mathematically, to derive the marginal effect of an independant variable (as we have seen in the \textit{Background} section), we only have discrete (binary) regressors in our specific case. Thus, while the derivative gives us a sense of the marginal effect, this effect may be different in reality.
 
-In addition to this, the marginal effect of a variable is linked to the value of other independent variables, so we are focus on the mean marginal effects for each variable. More precisely, we look at the marginal effect of a given variable assuming that the other variables' are valued at their mean. The method (\texttt{brute\_force}) we use to calculate this empirically this is as follows:
+In addition to this, the marginal effect of a variable is linked to the value of other independent variables, so we focus on the \textit{mean} marginal effects for each variable. More precisely, we look at the marginal effect of a given variable assuming that the other variables' are valued at their mean. The method we use to calculate this empirically (which we call "brute force") is as follows:
 
 \begin{enumerate}
     \item First, duplicate the original database and work on the new database
@@ -92,7 +92,7 @@ In addition to this, the marginal effect of a variable is linked to the value of
 
 This method yields an empirical mean marginal effect for each of the independent variables.
 
-Finally, we also wanted to get a sense of the accuracy of "rule-of-thumb" used to recover marginal effects from the coefficients of a logit regression (recall, this is $EM(x_1) \approx \frac{\beta_1^{logit}}{4}$. We find that this rule is not very accurate (the constant we divide by should be closer to $6$).
+Finally, we also wanted to get a sense of the accuracy of "rule-of-thumb" used to recover marginal effects from the coefficients of a logit regression (recall, this is $EM(x_1) \approx \\beta_1^{logit}/4$. We find that this rule is not very accurate (the constant we divide by should be closer to $6$).
 
 The values we obtained mathematically (and, up to a constant, through the "rule-of-thumb") are different from the empirical ones, which we explain by the non-continuity of the independent variable. However, for independent variables where we have enough data, the values are close, or differ in magnitude but not in sign, which gives us confidence as to the quality of our marginal effects (see Figure~\ref{fig:logit_marginal_effects}), and enables us to order the variables according to their importance and thus, to sense what determines the prediction we make.
 
@@ -100,8 +100,8 @@ The values we obtained mathematically (and, up to a constant, through the "rule-
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.4]{img/logit_marginal_effects}
-    \caption{Logit Marginal Effects}
+    \includegraphics[width=0.8\textwidth]{img/logit_marginal_effects}
+    \caption{Logit --- Marginal Effects}
     \label{fig:logit_marginal_effects}
 \end{figure}
 
@@ -118,8 +118,8 @@ As a result we can conclude that being young makes it more likely that you are i
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.4]{img/logit_odds_ratios}
-    \caption{Logit Odds Ratios}
+    \includegraphics[width=0.8\textwidth]{img/logit_odds_ratios}
+    \caption{Logit --- Odds Ratios}
     \label{fig:logit_odds_ratios}
 \end{figure}
 

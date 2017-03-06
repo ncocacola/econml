@@ -27,19 +27,19 @@ rectangles, or \textit{boxes} for simplicity and for ease of interpretation of t
 where $\hat{y}_{R_j}$ is the mean response for the training observations within the $j^{th}$ box.
 
 While this method may produce good predictions on the training set, it is likely to overfit the data because the resulting tree might be too complex. A
-smaller tree with fewer splits (that is, fewer regions $R_1, ..., R_J$) might lead to lower variance and better interpretation at the cost of a little bias.
+smaller tree with fewer splits (that is, fewer regions $R_1, ..., R_J$) may lead to lower variance and better interpretation at the cost of a little bias.
 
 There are two strategies to make the resulting tree simpler:
 
 \begin{enumerate}
-    \item Build the tree only so long as the decrease in the RSS due to each split exceeds some threshold; this method is considered somewhat "short-sighted" as an early below-threshold split might be followed by a very good split, i.e. a split that leads to a large reduction in RSS
-    \item Grow a very large tree $T_0$, and then prune it back in order to obtain a simpler subtree
+    \item Build the tree only so long as the decrease in the RSS due to each split exceeds some threshold; this method is considered somewhat "short-sighted" as an early below-threshold split might be followed by a very good split, i.e. a split that leads to a large reduction in RSS;
+    \item Grow a very large tree $T_0$, and then prune it back in order to obtain a simpler subtree.
 \end{enumerate}
 
 \subsubsection{Classification trees}
 The distinction between regression and classification trees is very similar to the one between the linear and logit/probit regressions. As we have seen in the previous section, in a regression tree, the predicted response for an observation is given by the (mean) response of the training observations that belong to the same region.
 
-In contract, the classification tree predicts that each observation belongs to the \textit{most commonly occuring class} among training observations in the region to which it belongs.
+In contrast, the classification tree predicts that each observation belongs to the \textit{most commonly occuring class} among training observations in the region to which it belongs.
 
 Within this setting, the RSS criterion cannot be used for making the binary splits, so the \textit{classification error rate} (i.e. the fraction of the training observations in that region that do not belong to the most common class) can be used instead:
 
@@ -82,23 +82,21 @@ Hence, a natural way to reduce the variance and increase the prediction accuracy
 
 $$\hat{f}_{avg}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f}^b(x)$$
 
-In practice, we do not have access to multiple training sets, but we can use a procedure called \textit{boostrap} to generate such sets, by taking repeated samples from the (single) training data set. In this approach we generate $B$ different bootstrapped training data sets. We then train our method on the $b^{th}$ bootstrapped training set in order to get $\hat{f}^b(x)$, and finally average all the predictions, to obtain:
+In practice, we do not have access to multiple training sets, but we can use a procedure called \textit{bootstrap} to generate such sets, by taking repeated samples from the (single) training data set. In this approach we generate $B$ different bootstrapped training data sets. We then train our method on the $b^{th}$ bootstrapped training set in order to get $\hat{f}^b(x)$, and finally average all the predictions, to obtain:
 
 $$\hat{f}_{bag}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f^*}^b(x)$$
 
 Bagging has been demonstrated to give impressive improvements in accuracy by combining together hundreds or even thousands of trees into a single procedure.
 
 \subsubsection{Random Forests}
-Random forests provide an improvement over bagging by way of a small tweak that "decorrelates" the trees. As in bagging, we build a number of decision trees on samples bootstrapped from the original dataset (i.e. created from random sampling with replacement).
+Random forests provide an improvement over bagging by way of a small tweak that "decorrelates" the trees. As in bagging, we build a number of decision trees on samples bootstrapped from the original dataset (i.e. created from random sampling with replacement). The only distinction between bagging and random forests is that the latter selects, at each candidate split, a random subset of the features.
 
-The only distinction between bagging and random forests is that the latter selects, at each candidate split, a random subset of the features. The reason for doing this is that, in bagging, if some of the features are very strong predictors for the output, these features will be selected in many of the splits. As a consequence, all of the bagged trees will look quite similar to each other and the predictions from the bagged trees will be highly correlated. In particular, this means that bagging will not lead to a reduction in variance over a simple tree.
+In bagging, if some of the features are very strong predictors for the output, they will be selected in many of the splits. As a consequence, all of the bagged trees will look quite similar to each other and the predictions from the bagged trees will be highly correlated. In particular, this means that bagging will not lead to a reduction in variance over a simple tree.
 
 Random forests overcome this problem by forcing every split to pick predictors from a random subset, thus decorrelating the trees and reducing the variance of the resulting trees.
 
 \subsubsection{Boosting}
-Recall that bagging involves creating multiple copies of the original dataset using the "boostrap" method, fitting a separate tree to each copy, and then combining all of the trees to create a single predictive model.
-
-Boosting does something similar, but instead of building each tree on top of a boostrapped dataset (independently of other trees), the trees a grown sequentially, using information from previous trees.
+Boosting is similar to bagging, but instead of building each tree on top of a bootstrapped dataset (independently of other trees), the trees are grown sequentially, using information from previous trees.
 
 Note that in boosting, unlike in bagging, the construction of each tree depends strongly on the trees that have already been grown. From a computational point of view, this means that it is impossible to calculate boosting-based predictions in parallel, thus considerably slowing down the computation.
 

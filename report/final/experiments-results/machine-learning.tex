@@ -8,11 +8,11 @@ We now turn out attention to \textit{tree-based methods}, completely different t
     \item Boosting
 \end{itemize}
 
-As for the regressions, we split our database into trimester, and first fit the models on \texttt{trim=1} data, before using the fitted model for predictions on \texttt{trim=[2,3,4]} observations.
+As for the regressions, we split our database into trimesters, and first fit the models on \texttt{trim=1} data, before using the fitted model for predictions on \texttt{trim=[2,3,4]} observations.
 
 \subsection{Simple Tree}
 
-Following the exact setting we have for regressions (i.e. keeping all variables binary), the initial results we obtain for \textit{accuracy} seem to suggest that the simple tree performs as well but not better than linear or logit regressions, with an average accuracy of 76\%, very close to what we had before.
+Following the exact setting we have for regressions (i.e. keeping all variables binary), the initial results we obtain for \textit{accuracy} seem to suggest that the simple tree performs as well but no better than linear or logit regressions, with an average accuracy of 76\%, very close to what we had before.
 
 Behind this result, however, lies a very sharp difference in terms of \textit{prediction}. The simple tree model accurately predicts 91.6\% of true positives, but only 47.5\% of true negatives (recall that, rather confusingly, \texttt{actop\_=1} should be interpreted as \textit{unemployed}). Therefore, in spite of its apparent simplicity, the simple tree is so far the best model if we want to capture active people.
 
@@ -27,7 +27,7 @@ Behind this result, however, lies a very sharp difference in terms of \textit{pr
 \end{center}
 
 \subsubsection{Gini Index}
-Now, the question we are really trying to answer relates to the marginal effect of each variable, and more generally, to the \textit{relative importance} of each variable. One method which is broadly used for measuring the variables importances is the \textit{Gini Index gain per variable}. Recall (from the \textit{Background} section) that the Gini Index is defined by:
+Now, the question we are really trying to answer relates to the marginal effect of each variable, and more generally, to the \textit{relative importance} of each variable. One method which is broadly used for measuring the variables importances is the \textit{Gini index gain per variable}. Recall (from the \textit{Background} section) that the Gini index is defined by:
 
 \begin{equation}
     G = \sum_{k=1}^{K} \hat{p}_{mk}(1-\hat{p}_{mk})
@@ -35,34 +35,34 @@ Now, the question we are really trying to answer relates to the marginal effect 
 
 where $\hat{p}_{mk}$ represents the proportion of training observations in the $m^{th}$ region that are from the $k_{th}$ class.
 
-The Gini Index is a measure of the total variance accross the $K$ classes (in our case $K=2$), so in a sense, Gini is an indication of \textit{node purity}. The Gini Index takes on small values whenever the probabilities are close to zero or one, that is if the node is \textit{pure}. At each split, we use the variable that maximises the gain in terms of Gini Index.
+The Gini index is a measure of the total variance accross the $K$ classes (in our case $K=2$), so in a sense, Gini is an indication of \textit{node purity}. The Gini index takes on small values whenever the probabilities are close to zero or one, that is if the node is \textit{pure}. At each split, we use the variable that maximises the gain in terms of Gini index.
 
-The way to assess a feature's importance is then made easy and relatively straightforward: we simply look at the total amount that the Gini Index is decreased by due to splits over a given feature (see Figure~\ref{fig:simple_tree_gini} for the results of the Gini Index on simple tree).
+The way to assess a feature's importance is then made easy and relatively straightforward: we simply look at the total amount that the Gini is decreased by due to splits over a given feature (see Figure~\ref{fig:simple_tree_gini}).
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.33]{img/simple_tree_gini.png}
-    \caption{Simple tree --- Gini Feature Importance}
+    \includegraphics[width=0.8\textwidth]{img/simple_tree_gini.png}
+    \caption{Simple Tree --- Gini Feature Importance}
     \label{fig:simple_tree_gini}
 \end{figure}
 
-This value gives us an idea of features' importance, and it is also widely used with Random Forests and Boosting methods, because it is easy and computed directly when running the algorithms (that is, without the need to perform more calculations),
+This value gives us an idea of features' importance, and it is also widely used with random forests and boosting methods, because it is easy and computed directly when running the algorithms (that is, without the need to perform more calculations),
 
 \subsubsection{Marginal Effects}
-Now that we have an idea of the relative importance of each feature/variable, we would like to measure a more accurate and specific measure of a marginal effect, i.e. what is the effect of a one-unit change in a given variable on the output?
+Now that we have an idea of the relative importance of each feature/variable, we would like to measure a more accurate and specific measure of a marginal effect, i.e. what is the effect of a one-unit change in a given variable on the output?
 
-While regressiosn allowed us to calculate this effect analytically, this is not possible with tree-based methods, so we replicate the "brute force" approach: duplicate the database and modify one parameter from 0 to 1 for everybody, use the fitted model to predict the probabilities for both databases, and take the difference.
+While regressions allowed us to calculate this effect analytically, this is not possible with tree-based methods, so we replicate the "brute force" approach: duplicate the database and modify one parameter from 0 to 1 for everybody, use the fitted model to predict the probabilities for both databases, and take the difference.
 
-We thus obtain a marginal effect per individual and then take the mean marginal effect over all individuals. This gives a good approximation of the marginal effect for the average individual (see Figure~\ref{fig:simple_tree_brute_force}) However, the marginal effect of one variable is still dependent on the values of the other parameters.
+We thus obtain a marginal effect per individual and then take the mean marginal effect over all individuals. This gives a good approximation of the marginal effect for the average individual (see Figure~\ref{fig:simple_tree_brute_force}). However, note that the marginal effect of one variable is still dependent on the values of the other parameters.
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.25]{img/simple_tree_brute_force.png}
-    \caption{Simple tree --- "Brute Force" marginal effects}
+    \includegraphics[width=0.8\textwidth]{img/simple_tree_brute_force.png}
+    \caption{Simple Tree --- "Brute Force" marginal effects}
     \label{fig:simple_tree_brute_force}
 \end{figure}
 
-We observe here that that the parameters with high Gini importance do have a fairly high marginal effect but it is impossible to infer the marginal effect of a change in one variable based only on Gini importance. Gini importance provides with a relative importance but it is not directly linked with marginal effects.
+We observe here that that the parameters with high Gini importance do have a fairly high marginal effect but it is impossible to infer the marginal effect of a change in one variable based only on Gini importance. Gini importance provides a measure of \textit{relative importance} but it is not directly linked with marginal effects.
 
 % TODO(P2): rewrite this section and add a histogram of the distribution of marginal effects for "etranger_" in a simple tree
 % Now we are going to have a closer look at those marginal effect.
@@ -76,7 +76,7 @@ We observe here that that the parameters with high Gini importance do have a fai
 
 With the "brute force" method, we find a mean value and a standard deviation. This standard deviation measures the dispersion of the marginal effect across individuals, and is in fact not the dispersion we are looking for. What we would like is to build a 95\% confidence interval for the value of the mean marginal effect.
 
-In order to find this, we use the \textit{bootstrap} method, which consists in the following procedure repeated $n$ times (see results in Figure~\ref{fig:simple_tree_boostrap}):
+In order to find this, we use the \textit{bootstrap} method, which consists in the following procedure repeated $n$ times (see results in Figure~\ref{fig:simple_tree_bootstrap}):
 
 \begin{enumerate}
     \item Create a "new" dataset by picking observations from the original dataset \textit{with replacement}
@@ -88,35 +88,35 @@ We used $n$ = 1000 for simple trees, but for later methods (e.g. boosting), we h
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.35]{img/simple_tree_bootstrap.png}
-    \caption{Simple tree --- 95\% confidence interval for mean marginal effects ("Bootstrap")}
+    \includegraphics[width=0.8\textwidth]{img/simple_tree_bootstrap.png}
+    \caption{Simple Tree --- 95\% confidence interval for mean marginal effects ("Bootstrap")}
     \label{fig:simple_tree_bootstrap}
 \end{figure}
 
 The results we obtained for a simple tree are relatively satisfying --- it is easy to infer a sense of causality in the model.
 
-At the same time, it is clear that the Simple Decision Tree is limited. The quality of the predictions are not any better in our case and don't justify the computation time spent to calculating the marginal effects. However, simple trees classify the individual in a very different way than regression methods and even though it is a relatively simple method, it will still fit better to certain classes of problems. As a result, growing a tree or two to see how they fit the data should be done most of time.
+At the same time, it is clear that the simple tree is limited. The quality of the predictions are not any better in our case and don't justify the computation time spent calculating the marginal effects. However, simple trees classify the individual in a very different way than regression methods and even though it is a relatively simple method, it will still fit better to certain classes of problems. As a result, growing a tree or two to see how they fit the data should be done most of the time.
 
 In order to exploit the nature of the tree better, we also tried to grow a tree directly using categorical variables (as opposed to converting all variables to a set of binary variables), as long as the variables could be ordered. We did obtain slightly better result on average (77.5\% accuracy) but the most striking part was that we predicted the people who are active (i.e. \texttt{actop\_=0}) even better, 93\% of the time.
 
 
-\subsection{Random Forest}
+\subsection{Random Forests}
 
-We will not expand here on how random forests work --- we redirect the reader to the \textit{Background} for more theoretical background. However, it is important to point out that the Random Forest algorithm is based on Simple Decision Trees, and that it is expected to improve prediction quality by introducing some randomness.
+We will not expand here on how random forests work --- we point the reader to the theory in \textit{Background}. However, it is important to point out that the random forest algorithm is an aggregation of simple trees, and that it is expected to improve prediction quality by introducing some randomness.
 
 In our very specific case, with only a few independent variables to choose from, all of which are binary or categorical, the prediction accuracy we get is rather disappointing when compared with the complexity of the algorithm: the overall accuracy we can reach is below 78\%, a result similar to what we get with a simple tree.
 
-However, using (the original) categorical variables for \texttt{age} and \texttt{diploma} instead of binary variables, and using a maximum depth of tree of 9 and a maximum feature per tree of 5, we managed to reach a 93.5\% accuracy for prediction of active people, the best we’ve found so far. The cost of this improved accuracy is that we are below 50\% (approximately 46\% over the four quarters) for predicting inactive people.
+However, using (the original) categorical variables for \texttt{age} and \texttt{diploma} instead of binary variables, and using a maximum depth of tree of 9 and a maximum feature per tree of 5, we managed to reach a 93.5\% accuracy for prediction of active people, the best we’ve found so far. The cost of this improved accuracy is that we are below 50\% for predicting inactive people (approximately 46\% over the four quarters).
 
-The results we obtain here are somewhat disappointing --- nevertheless, we would like to emphasise that this is mainly due to our setting. In general, random forests do give better predictions than simple trees, but as the algorithm is still based on simple trees, it is expected to conserve some of the main features of simple trees.
+The results we obtain here are somewhat disappointing --- nevertheless, we would like to emphasise that this we believe this to be mainly due to our setting. In general, random forests do give better predictions than simple trees, but as the algorithm is still based on simple trees, it is expected to conserve some its the main features.
 
-\subsubsection{Gini Index}
-We used the exact same methods to calculate Gini importance as for simple trees. We expect to find some similarities between the Gini Index with simple trees and random forests --- at the very least, we expect the least important parameters in the simple tree to be more important in Random Forest due to the randomisation of the choice of independent variables (see Figure~\ref{fig:random_forest_gini}).
+\subsubsection{Gini index}
+We used the exact same methods to calculate Gini importance as for simple trees. We expect to find some similarities between the Gini index with simple trees and random forests --- at the very least, we expect the least important parameters in the simple tree to be more important in random forests due to the randomisation of the choice of independent variables (see Figure~\ref{fig:random_forest_gini}).
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.35]{img/random_forest_gini.png}
-    \caption{Random Forest --- Gini Feature Importance}
+    \includegraphics[width=0.8\textwidth]{img/random_forest_gini.png}
+    \caption{Random Forests --- Gini Feature Importance}
     \label{fig:random_forest_gini}
 \end{figure}
 
@@ -124,27 +124,27 @@ As we can see the main features are still the same even though the values vary a
 
 \subsubsection{Marginal Effects}
 
-Now, we take a closer at the real mean marginal effects, computed empirically. We expect to find some relationship between the results found for simple tree and and those we have now obtained.
+We now take a closer at the real mean marginal effects, computed empirically. We expect to find some relationship between the results found for simple tree and and those we have now obtained.
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.25]{img/random_forest_brute_force.png}
-    \caption{Random forest --- "Brute Force" marginal effects}
+    \includegraphics[width=0.8\textwidth]{img/random_forest_brute_force.png}
+    \caption{Random Forests --- "Brute Force" marginal effects}
     \label{fig:random_forest_brute_force}
 \end{figure}
 
-As we can see here, the marginal effect of \texttt{dip11\_} (highest degree of education) is largest in absolute value, however \texttt{dip11\_} is not very important in terms of its Gini Index, which means that it wasn't significant in terms of purity gain. One reason could actually be that because few people have \texttt{dip11\_}, using it at a split at the very beginning does not produce a later gain in purity compared to other variable such as \texttt{age15\_} for instance. As a result \texttt{dip11\_} is only used as a very late split and so its purity gain may be regarded as somewhat negligible.
+As we can see here, the marginal effect of \texttt{dip11\_} (highest degree of education) is largest in absolute value, however \texttt{dip11\_} is not very important in terms of its Gini index, which means that it wasn't significant in terms of purity gain. One reason could actually be that because few people have \texttt{dip11\_}, using it at a split at the very beginning does not produce a later gain in purity compared to other variable such as \texttt{age15\_} for instance. As a result \texttt{dip11\_} is only used as a very late split and so its purity gain may be regarded as somewhat negligible.
 
-This actually emphasises the point we already made earlier about the simple tree. The Gini Index is somewhat interesting for its simplicity but it only gives us an idea about relative marginal effects and it is only relevant when the dataset of people with the two features are approximately of the same size.
+This actually emphasises the point we already made earlier about the simple tree. The Gini index is somewhat interesting for its simplicity but it only gives us an idea about relative marginal effects and it is only relevant when the dataset of people with the two features are approximately of the same size.
 
-As for the mean marginal effect values we obtained,  we can emphasise once again that the values are very different across parameters, be it in terms of sign or magnitude. This means, in turn, that it is somewhat easy to deduce a relevant sense of causality from these values, i.e. we can picture what feature is important in the prediction we make for a given individual.
+As for the mean marginal effect values we obtained,  we can emphasise once again that the values are very different across parameters, both in terms of sign or magnitude. This means that it is somewhat easy to deduce a relevant sense of causality from these values, i.e. we can picture what feature is important in the prediction we make for a given individual.
 
-In order to give some statistical foundations to our mean marginal effects, we also used the bootstrap method (with $n=1000$ iterations) to calculate a 95\% Confidence Interval (see Figure~\ref{fig:random_forest_bootstrap}). Note that while this computation was relatively fast for simple trees (3.5 seconds per iteration), it was much slower for the random forest (\textasciitilde6 hours for $n=1000$), due to the nature of the algorithm.
+In order to give some statistical foundations to our mean marginal effects, we also used the bootstrap method (with $n=1000$ iterations) to calculate a 95\% Confidence Interval (see Figure~\ref{fig:random_forest_bootstrap}). Note that while this computation was relatively fast for simple trees (3.5 seconds per iteration), it was much slower for the random forest (4 minutes per iteration), due to the nature of the algorithm.
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.25]{img/random_forest_bootstrap.png}
-    \caption{Random forest --- 95\% confidence interval for mean marginal effects ("Bootstrap")}
+    \includegraphics[width=0.8\textwidth]{img/random_forest_bootstrap.png}
+    \caption{Random Forests --- 95\% confidence interval for mean marginal effects ("Bootstrap")}
     \label{fig:random_forest_bootstrap}
 \end{figure}
 
@@ -161,26 +161,26 @@ As we did for the logit method, we also calculate odds ratios (see Figure~\ref{f
     OR = \frac{P(y=1|x=1, X_{-1})/P(y=0|x=1, X_{-1})}{P(y=1|x=0, X_{-1})/P(y=0|x=0, X_{-1})}
 \end{equation}
 
-An odds ratio close to 1 means that the variable doesn’t add a lot of information. If it is close to zero, it means the variable strongly increases the probability that the individual works, and a ratio far beyond one indicates the opposite.
+Recall that an odds ratio close to 1 means that the variable doesn’t add a lot of information. If it is close to zero, it means the variable strongly increases the probability that the individual works, and a ratio far beyond one indicates the opposite.
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.25]{img/random_forest_odds_ratios.png}
-    \caption{Random forest --- Odds Ratios}
+    \includegraphics[width=0.8\textwidth]{img/random_forest_odds_ratios.png}
+    \caption{Random Forests --- Odds Ratios}
     \label{fig:random_forest_odds_ratios}
 \end{figure}
 
 It is important to notice that in some cases, we did find a high mean marginal effect but in the particular case where we look at the reference individual the marginal effect is neglectable. This is the case for instance with \texttt{age30\_} --- which means that for an individual, being in his/her 30s is very similar in terms of prediction to being in his/her 50s (the reference variable).
 
-Another interesting point is that odds ratios are easily compared between models. Unsurprisingly, we find that the ratios are very similar between the simple tree and the random forest, slightly less spread out in the case of the random forest. This result makes sense when we think about the random forest algorithm, as a variable that may not be used much in a single simple tree may take more importance when it comes to the random forest due to the randomisation of predictors selection.
+Another interesting point is that odds ratios are easily compared between models. Unsurprisingly, we find that the ratios are very similar between the simple tree and the random forest, slightly less spread out in the case of the random forest. This makes sense when we think about the random forest algorithm, since a variable that may not be used much in a single tree may take more importance when it comes to the random forest due to the randomisation of predictors' selection.
 
-We find that it is indeed possible to infer causality with the random forest algorithm, and to assess the importance of each predictor according to other predictor values. The main limits of this approach are the computation time and the amount of (diverse) data that are required to find interesting results. However, assuming we have access to large datasets and very powerful machines, it would make sense to use random forests assuming the prediction it makes is more accurate.
+We find that it is indeed possible to infer causality with the random forest algorithm, and to assess the importance of each predictor according to other predictor values. The main limits of this approach are the computation time and the amount of data that are required to find interesting results. However, assuming we have access to large datasets and very powerful machines, it would make sense to use random forests if the prediction it makes is more accurate.
 
 Given that the functional form (e.g. logit) and tree-based approaches are very different, random forest will prove better than any regression in many cases, and it should not be ruled out because it lacks a (direct) sense of causality. Indeed, if it is needed and worth it, causality is computable.
 
 
 \subsection{Boosting}
-As our last Machine Learning algorithm pick, we opted for boosting --- we used the AdaBoost algorithm available in \texttt{scikit-learn}, and take a Simple Decision Tree as a base estimator.
+As our last Machine Learning algorithm pick, we opted for boosting --- we used the AdaBoost algorithm available in \texttt{scikit-learn}, and took a simple tree as a base estimator.
 
 The first aspect of boosting we would like to emphasise is that it is a relatively complex algorithm. Indeed, the fact that the computation of each new tree relies on the previous trees makes it impossible to parallelise fully, which means that computation time is very long. In contrast, with random forest, we can take advantage of large multi-core machines to speed up the computation, which is impossible with boosting.
 
@@ -195,26 +195,26 @@ We have applied to this model, the very same methods as before in order to find 
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.25]{img/boosting_brute_force.png}
+    \includegraphics[width=0.8\textwidth]{img/boosting_brute_force.png}
     \caption{Boosting --- "Brute Force" marginal effects}
     \label{fig:boosting_brute_force}
 \end{figure}
 
-We first notice that the absolute values we obtain are very small, which means that that the marginal effects seem less spread towards extreme values (on average). The dispersion around the mean is still very consequent but the means themselves are much smaller than what we obtained for random forests or simple trees for instance.
+We first notice that the absolute values we obtain are very small, which means that that the marginal effects seem less spread towards extreme values. The dispersion around the mean is still very consequent but the means themselves are much smaller than what we obtained for random forests or simple trees for instance.
 
 A plausible explanation for this can be found by looking more closely at the algorithm itself. Boosting grows trees recursively and based on previous trees' residuals --- then, it makes sense to infer that more variables are involved in the prediction process and especially that the most important variables (in previous models) would lose some of their dominance. As a result, boosting seems to "even out" the impact of each variable.
 
 % TODO(P2): rewrite this section + histogramme effet marginal de dip11_
-% We can of course still denote some differences, for instance dip11 has on average the biggest impact on the final prediction. Here is the distribution of the marginal effects around the mean :
+% We can of course still denote some differences, for instance dip11 has on average the biggest impact on the final prediction. Here is the distribution of the marginal effects around the mean :
 
 % The distribution is very important to understand how it works indeed. Some variable could have opposite marginal effect depending on some other features so it important to try to perceive those.
-% So far I did not mention the Gini Index importance (or entropy since we used entropy as our purity estimator) because actually in this specific case the weaknesses of that notions are simply too striking. In the case of boosting, founding any sensible reasoning upon those figures would be very misleading if we compare to the real impact (marginal effect) the predictors have. So, we suggested not to rely on those figures before, in this setting we would warmly recommend not to infer causality using such results.
+% So far I did not mention the Gini index importance (or entropy since we used entropy as our purity estimator) because actually in this specific case the weaknesses of that notions are simply too striking. In the case of boosting, founding any sensible reasoning upon those figures would be very misleading if we compare to the real impact (marginal effect) the predictors have. So, we suggested not to rely on those figures before, in this setting we would warmly recommend not to infer causality using such results.
 
-In order to ensure that the means we found are statistically significant, we also compute a 95\% confidence interval using the bootstrap method. It is important to note however, that due to the nature and complexity of the boosting algorithm, we were not able to run more than $n=500$ iterations, and that even by limiting the number of iterations, the computation took more than 30 hours and required very large amounts of memory.
+In order to ensure that the means we found are statistically significant, we also computed a 95\% confidence interval using the bootstrap method. It is important to note however, that due to the nature and complexity of the boosting algorithm, we were not able to run more than $n=500$ iterations, and that even by limiting the number of iterations, the computation took more than 30 hours in total and required very large amounts of memory.
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.25]{img/boosting_bootstrap.png}
+    \includegraphics[width=0.8\textwidth]{img/boosting_bootstrap.png}
     \caption{Boosting --- 95\% confidence interval for mean marginal effects ("Bootstrap")}
     \label{fig:boosting_bootstrap}
 \end{figure}
@@ -226,9 +226,9 @@ Finally, we take a quick look at the odds ratios for the boosting model (Figure~
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.25]{img/boosting_odds_ratios.png}
+    \includegraphics[width=0.8\textwidth]{img/boosting_odds_ratios.png}
     \caption{Boosting --- Odds Ratios}
     \label{fig:boosting_odds_ratios}
 \end{figure}
 
-This is an interesting distinction between random forest and boosting, which would indicate that boosting will try to look at the "bigger picture" of an individuals characteristics, while random forest would give more importance to the main characteristics.
+This is an interesting distinction between random forest and boosting, which seems to indicate that boosting trie to look at the "bigger picture" of an individual's characteristics, while random forests give more importance to the main characteristics.

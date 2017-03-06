@@ -3,7 +3,7 @@
 As our objective is to compare classical econometric methods to machine learning algorithms, we had to pick a real dataset with a binary variable of interest $y$. We also had to ensure that we had an adequate experimental setup that would allow us to implement the algorithms and experiment in a relatively flexible way, while also allowing us to record and analyse our results with relative ease.
 
 \section{Database}
-On the advice of our supervisors, we turned to the \textit{Enqu\^ete emploi en continu 2015} database \cite{enquete} from the INSEE website. \textit{Enqu\^ete Emploi} is the canonical database for the statistical system of knowledge of employment and unemployment in France, and one of the only sources for implementing the definition of unemployment as defined by the International Labor Office \cite{ilo}.
+On the advice of our supervisors, we turned to the \textit{Enqu\^ete emploi en continu 2015} database \cite{enquete} from the INSEE website. \textit{Enqu\^ete Emploi} is the canonical database for the statistical system of knowledge of employment and unemployment in France, and one of the only sources that implements the definition of unemployment as defined by the International Labor Office \cite{ilo}.
 
 The survey contains 431,678 observations taken in 2015, and provides original data on more than 100 variables, including occupation, female and youth activity, hours of work, precarious employment and wages. As such, using this data, we can better understand the situation of the unemployed as well as changes in the situation with regard to work: change from school to work, retirement activity, changes in occupation.
 
@@ -11,7 +11,7 @@ After downloading the dataset, we performed some basic manipulations to make it 
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[scale=0.5]{img/database_actop_.pdf}
+    \includegraphics[width=0.8\textwidth]{img/database_actop_.pdf}
     \caption{Number of active (\texttt{actop\_=0}) and inactive (\texttt{actop\_=1}) persons}
     \label{fig:database_actop_}
 \end{figure}
@@ -26,5 +26,6 @@ Our setup for programming, running and analysing the results of our experiments 
 
 When our experiments reached the point where computation on our personal laptops was too slow/not possible anymore, we turned to Amazon Web Services \cite{aws}, a cloud computing platform, which enabled us to provision very powerful machines almost immediately, and at a relatively small cost (\textasciitilde20\$ in total).
 
-All of our work and results can be found on the project's \href{https://github.com/ncocacola/econml/}{GitHub repository} and in the
-\href{https://github.com/ncocacola/econml/blob/master/econml.ipynb}{Jupyter Notebook}.
+\section{Source}
+All of our work and results can be found on the project's \href{https://github.com/ncocacola/econml/}{GitHub repository}\footnote{\texttt{https://github.com/ncocacola/econml/}} and in the
+\href{https://github.com/ncocacola/econml/blob/master/econml.ipynb}{Jupyter Notebook}\footnote{\texttt{https://github.com/ncocacola/econml/blob/master/econml.ipynb}}.

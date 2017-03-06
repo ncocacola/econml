@@ -1,20 +1,22 @@
 \chapter{Conclusion}
 
-Using the \textit{Enqu\^ete emploi en continu 2015} database \cite{enquete}, we studied the binary variable \texttt{actop\_} and attempted to recover the main parameters that impact its value, using various Econometric and Machine Learning methods.
+Using the \textit{Enqu\^ete emploi en continu 2015} database \cite{enquete}, we studied the binary variable \texttt{actop\_} and attempted to recover the main parameters that impact its value and their marginal effects, using various Econometric and Machine Learning methods.
 
 Our results have not allowed us to draw any definitive conclusions, but enabled us to gain a lot of insight into the workings of the various methods, and their advantages and disadvantages:
 
 Our findings can be summarised in the following points:
 
 \begin{itemize}
-    \item No algorithm is better than others in every aspect --- there are always cases in which one is better than others and vice-versa
-    \item Predictions can be accurate on different aspects (e.g. good at predicting $1$'s, but not $0$'s), which means that it is important to be specific about the objective that we pursue
-    \item Alongside their accuracy, models have different costs, in terms of computational power required, interpretability and simplicity. In general, it is better to follow Occam's razor and stick with the simplest method that provides adequate results
-    \item Marginal effects are always inferrable, albeit at vastly different costs and with different accuracies. In other works, it is always possible to get a sense of what’s going on, through various methods
+    \item No algorithm is better than others in every aspect --- there are always situations in which one is better than others and vice-versa.
+    \item Predictions can be accurate on different aspects (e.g. good at predicting $1$s, but not $0$s), which means that it is important to be specific about the objective that we pursue.
+    \item Alongside their accuracy, models have different costs, in terms of computational power required, interpretability and simplicity. In general, it is better to follow Occam's razor and stick with the simplest method that provides adequate results.
+    \item Marginal effects are always inferrable, albeit at vastly different costs and with different accuracies. In other works, it is always possible to get a sense of what’s going on, through various methods.
 \end{itemize}
 
-\subsection{Future Work}
+\section{Future Work}
 
 Due to various constraints (mainly time and computational power), we were only able to complete a subset of the experiments we have in mind. While our results provided us with some answers, they also opened up many other questions. It would be very interesting to pick a different database and/or set of parameters (in particular, continuous variables), and test some of the conclusions we made from our experiments to either validate or invalidate them, for example by shedding more light on how the various algorithms assign importance to the features.
 
-At the same time, we must not forget that perfect prediction is metaphysically impossible, and that the more effort is put into finding an accurate model, the likelier it is that the complexity of the model make its very hard to interpret. The key is thus to always keep in mind the tradeoff between accuracy and interpretability.
+At the same time, we must not forget that perfect prediction is metaphysically impossible, and that the more effort is put into finding an accurate model, the likelier it is that the complexity of the model makes it very hard to interpret. The key is thus to always keep in mind the tradeoff between accuracy and interpretability.
+
+\newpage\null\thispagestyle{empty}\newpage  % Empty page
