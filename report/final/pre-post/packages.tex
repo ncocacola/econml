@@ -1,11 +1,17 @@
 \documentclass[a4paper]{report}
+\usepackage[left=1in, right=1in, top=1.25in, bottom=1.25in]{geometry}
+
+% Fonts
+\usepackage[T1]{fontenc}                    % tex.stackexchange.com/q/664/
+\usepackage[sc,slantedGreek]{mathpazo}
+
+% Small fixes
 \usepackage{parskip}                        % tex.stackexchange.com/q/49188/
 \usepackage{graphicx}                       % ctan.org/pkg/graphicx
-\usepackage[T1]{fontenc}                    % tex.stackexchange.com/q/664/
-\usepackage{enumitem}                       % tex.stackexchange.com/q/119919
+\usepackage{enumitem}                       % tex.stackexchange.com/q/119919/
 \usepackage{hyperref}                       % tex.stackexchange.com/q/315461/
 
-% http://texblog.org/tag/titlesec/
+% Chapters, sections (http://texblog.org/tag/titlesec/)
 \usepackage{titlesec}
 \newcommand{\hsp}{\hspace{20pt}}
 \titleformat{\chapter}{\Huge\bfseries}{\thechapter\hsp}{0pt}{\Huge\scshape\bfseries}
@@ -22,5 +28,3 @@
 
 % Bibliography
 \bibliographystyle{plain}
-
-% TODO: style and packages from `thesis`
