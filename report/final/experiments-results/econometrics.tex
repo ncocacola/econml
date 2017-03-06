@@ -1,5 +1,5 @@
 \section{Econometrics}
-We used the following classical econometric methods on \texttt{eec15} database:
+We used the following classical econometric methods on the \texttt{eec15} database:
 
 \begin{itemize}
     \item Linear Regression
@@ -109,7 +109,7 @@ The values we obtained mathematically (and, up to a constant, through the "rule-
 For the logit method, and in addition to the marginal effects, we also calculate the odds ratios to get an idea of the difference that having a given parameters or not makes on the response variable (see Figure~\ref{fig:logit_odds_ratios}). This will be interesting to compare with odds ratios from the Machine Learning algorithms. We use the following odds ratios formula:
 
 \begin{equation}
-OR = \frac{P(y=1|x=1, X_{-1})/P(y=0|x=1, X_{-1})}{P(y=1|x=0, X_{-1})/P(y=0|x=0, X_{-1})}
+    OR = \frac{P(y=1|x=1, X_{-1})/P(y=0|x=1, X_{-1})}{P(y=1|x=0, X_{-1})/P(y=0|x=0, X_{-1})}
 \end{equation}
 
 An odds ratio close to 1 means that the variable doesn’t add a lot of information. If it is close to zero, it means the variable strongly increases the probability that the individual works, and a ratio far beyond one indicates the opposite.

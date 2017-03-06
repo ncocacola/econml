@@ -139,7 +139,7 @@ This actually emphasises the point we already made earlier about the simple tree
 
 As for the mean marginal effect values we obtained,  we can emphasise once again that the values are very different across parameters, be it in terms of sign or magnitude. This means, in turn, that it is somewhat easy to deduce a relevant sense of causality from these values, i.e. we can picture what feature is important in the prediction we make for a given individual.
 
-In order to give some statistical foundations to our mean marginal effects, we also used the bootstrap method (with $n=1000$ iterations) to calculate a 95\% Confidence Interval (see Figure~\ref{fig:random_forest_bootstrap}). Note that while this computation was relatively fast for simple trees (3.5 seconds per iteration), it was much slower for the random forest (~6 hours for $n=1000$), due to the nature of the algorithm.
+In order to give some statistical foundations to our mean marginal effects, we also used the bootstrap method (with $n=1000$ iterations) to calculate a 95\% Confidence Interval (see Figure~\ref{fig:random_forest_bootstrap}). Note that while this computation was relatively fast for simple trees (3.5 seconds per iteration), it was much slower for the random forest (\textasciitilde6 hours for $n=1000$), due to the nature of the algorithm.
 
 \begin{figure}
     \centering
@@ -184,7 +184,7 @@ As our last Machine Learning algorithm pick, we opted for boosting --- we used t
 
 The first aspect of boosting we would like to emphasise is that it is a relatively complex algorithm. Indeed, the fact that the computation of each new tree relies on the previous trees makes it impossible to parallelise fully, which means that computation time is very long. In contrast, with random forest, we can take advantage of large multi-core machines to speed up the computation, which is impossible with boosting.
 
-The results we obtained for boosting are somewhat disappointing. The prediction is hardly any better than what we would obtain with a logistic regression. The general prediction accuracy is around 78\%. Once again, the algorithm is very good at predicting $1$’s (~91,5\%) but not very good at predicting $0$’s (~52\%). As the boosting algorithm is also based on simple trees, it makes sense that we find once again, the main characteristics of the simple tree we grew earlier, especially considering we used the very same predictors.
+The results we obtained for boosting are somewhat disappointing. The prediction is hardly any better than what we would obtain with a logistic regression. The general prediction accuracy is around 78\%. Once again, the algorithm is very good at predicting $1$’s (\textasciitilde91,5\%) but not very good at predicting $0$’s (\textasciitilde52\%). As the boosting algorithm is also based on simple trees, it makes sense that we find once again, the main characteristics of the simple tree we grew earlier, especially considering we used the very same predictors.
 
 However disappointing the results, in many cases, boosting algorithms outperform all the other models we have applied. The fact that this does not happen in this specific situation is not a contradiction. Our model is very specific with only binary variables and we do not possess enough informative variable to truly make a difference.
 
