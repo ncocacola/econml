@@ -66,9 +66,14 @@ The distinction between logit and probit comes from the functional form (or \tex
     where $\phi(x) = \frac{1}{\sqrt{2\pi}}\ e^{-\frac{x^2}{2}}$
 \end{itemize}
 
-Note that since both link functions are cumulative distribution functions of probability distributions, the predicted values are limited between 0 and 1.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[scale=0.6]{img/logit.pdf}
+    \caption{Logit function}
+    \label{fig:logit}
+\end{figure}
 
-% TODO: graphs of the linear, logit and probit models
+Note that since both link functions are cumulative distribution functions of probability distributions, the predicted values are limited between 0 and 1.
 
 \subsubsection{Marginal effects}
 The marginal effect (i.e. the effect of one-unit increase in $x_i$ on $y$, \textit{ceteris paribus}) can be obtained by simply taking the partial derivative of $y$ with respect to the variable of interest $x_i$:
